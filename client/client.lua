@@ -27,43 +27,32 @@ local LXRCore = nil  -- LXRCore framework object
 -- FRAMEWORK AUTO-DETECTION
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 local function DetectFramework()
-    if Config.AutoDetectFramework then
-        -- Try to detect LXRCore (github.com/lxrcore)
-        if GetResourceState('lxr-core') == 'started' or GetResourceState('lxrcore') == 'started' then
-            currentFramework = 'LXRCore'
-            -- Get LXRCore object
-            exports['lxr-core']:GetCoreObject(function(core)
-                LXRCore = core
-                PlayerData = LXRCore.Functions.GetPlayerData()
-            end)
-            return 'LXRCore'
-        end
-        
-        -- Try to detect VORP
-        if GetResourceState('vorp_core') == 'started' then
-            currentFramework = 'VORP'
-            TriggerEvent('vorp:getCharacter', function(user)
-                PlayerData = user
-            end)
-            return 'VORP'
-        end
-        
-        -- Try to detect RSG
-        if GetResourceState('rsg-core') == 'started' then
-            currentFramework = 'RSG'
-            return 'RSG'
-        end
-        
-        -- Try to detect RedEM:RP
-        if GetResourceState('redemrp') == 'started' or GetResourceState('redem_roleplay') == 'started' then
-            currentFramework = 'RedEM'
-            return 'RedEM'
-        end
-        
-        -- Try to detect QBR (QBCore for RedM)
-        if GetResourceState('qbr-core') == 'started' then
-            currentFramework = 'QBR'
-            return 'QBR'
+    if Config.Framework.autoDetect then
+        -- Iterate through detection order from config
+        for _, frameworkName in ipairs(Config.Framework.detectionOrder) do
+            local framework = Config.Framework[frameworkName:lower()]
+            if framework and framework.resourceName then
+                local resourceState = GetResourceState(framework.resourceName)
+                if resourceState == 'started' then
+                    currentFramework = frameworkName
+                    
+                    -- Framework-specific initialization
+                    if frameworkName == 'lxrcore' then
+                        exports[framework.resourceName]:GetCoreObject(function(core)
+                            LXRCore = core
+                            if framework.cachePlayerData then
+                                PlayerData = LXRCore.Functions.GetPlayerData()
+                            end
+                        end)
+                    elseif frameworkName == 'vorp' then
+                        TriggerEvent('vorp:getCharacter', function(user)
+                            PlayerData = user
+                        end)
+                    end
+                    
+                    return frameworkName
+                end
+            end
         end
     end
     
@@ -77,12 +66,12 @@ CreateThread(function()
     Wait(1000)
     local detected = DetectFramework()
     
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Started successfully')
-        print('^2[' .. Config.Branding.name .. ']^7 Framework: ^3' .. detected .. '^7')
-        print('^2[' .. Config.Branding.name .. ']^7 Version: ^3' .. Config.Branding.version .. '^7')
-        print('^2[' .. Config.Branding.name .. ']^7 Author: ^3' .. Config.Branding.author .. '^7')
-        print('^2[' .. Config.Branding.name .. ']^7 Website: ^3' .. Config.Branding.website .. '^7')
+    if Config.Debug.enabled then
+        print('^2[' .. Config.Product.shortName .. ']^7 Started successfully')
+        print('^2[' .. Config.Product.shortName .. ']^7 Framework: ^3' .. detected .. '^7')
+        print('^2[' .. Config.Product.shortName .. ']^7 Version: ^3' .. Config.Product.version .. '^7')
+        print('^2[' .. Config.Product.shortName .. ']^7 Author: ^3' .. Config.Product.author .. '^7')
+        print('^2[' .. Config.Product.shortName .. ']^7 Website: ^3' .. Config.Product.website .. '^7')
     end
 end)
 
@@ -111,7 +100,15 @@ local function GetPlayerJob()
 end
 
 local function GetMenuItems()
-    local menuItems = Config.MenuItems
+    local menuItems = {}
+    
+    -- Add only enabled menu items from config
+    for _, item in ipairs(Config.MenuItems) do
+        if item.enabled ~= false then
+            table.insert(menuItems, item)
+        end
+    end
+    
     local playerJob = GetPlayerJob()
     
     -- Add job-specific menu if player has a job
@@ -135,21 +132,31 @@ local function OpenRadialMenu()
         action = 'openMenu',
         menuItems = GetMenuItems(),
         config = {
-            radius = Config.MenuRadius,
-            iconSize = Config.IconSize,
-            animationSpeed = Config.AnimationSpeed,
-            theme = Config.Theme,
+            radius = Config.Menu.radius,
+            iconSize = Config.Menu.iconSize,
+            centerIconSize = Config.Menu.centerIconSize,
+            spacing = Config.Menu.spacing,
+            animationSpeed = Config.Menu.animationSpeed,
+            animationStyle = Config.Menu.animationStyle,
+            staggerAnimation = Config.Menu.staggerAnimation,
+            staggerDelay = Config.Menu.staggerDelay,
+            theme = Config.Theme.themes[Config.Theme.current],
+            background = Config.Theme.background,
             framework = 'RedM',
-            branding = Config.Branding.name,
-            holdMode = Config.HoldMode,
-            holdTime = Config.HoldTime,
-            backgroundBlur = Config.BackgroundBlur,
-            soundEffects = Config.SoundEffects
+            branding = Config.Product.shortName,
+            holdMode = Config.Menu.holdMode,
+            holdTime = Config.Menu.holdTime,
+            backgroundBlur = Config.Menu.backgroundBlur,
+            blurStrength = Config.Menu.blurStrength,
+            soundEffects = Config.Sounds.enabled,
+            enableParticles = Config.Menu.enableParticles,
+            enableTooltips = Config.Menu.enableTooltips,
+            tooltipDelay = Config.Menu.tooltipDelay
         }
     })
     
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Menu opened')
+    if Config.Debug.enabled then
+        print('^2[' .. Config.Product.shortName .. ']^7 Menu opened')
     end
 end
 
@@ -163,8 +170,8 @@ local function CloseRadialMenu()
         action = 'closeMenu'
     })
     
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Menu closed')
+    if Config.Debug.enabled then
+        print('^2[' .. Config.Product.shortName .. ']^7 Menu closed')
     end
 end
 
@@ -179,11 +186,11 @@ end
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 -- KEY BINDINGS
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-if Config.UseKeyMapping then
-    RegisterKeyMapping('radialmenu', 'Open Radial Menu', 'keyboard', Config.OpenKey)
+if Config.Menu.useKeyMapping then
+    RegisterKeyMapping(Config.Commands.openMenu, 'Open Radial Menu', 'keyboard', Config.Menu.openKey)
 end
 
-RegisterCommand('radialmenu', function()
+RegisterCommand(Config.Commands.openMenu, function()
     ToggleRadialMenu()
 end, false)
 
@@ -196,11 +203,13 @@ RegisterNUICallback('closeMenu', function(data, cb)
 end)
 
 RegisterNUICallback('selectItem', function(data, cb)
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Item selected: ^3' .. data.action .. '^7')
+    if Config.Debug.enabled and Config.Debug.printActions then
+        print('^2[' .. Config.Product.shortName .. ']^7 Item selected: ^3' .. data.action .. '^7')
     end
     
-    CloseRadialMenu()
+    if Config.Menu.closeOnSelect then
+        CloseRadialMenu()
+    end
     
     -- Trigger the action
     TriggerEvent('lxr-radialmenu:client:' .. data.action)
@@ -215,9 +224,9 @@ end)
 RegisterNetEvent('lxr-radialmenu:client:horse:call', function()
     local ped = PlayerPedId()
     -- Call player's horse using whistle
-    ExecuteCommand('horse') -- Most frameworks have a horse command
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Whistling for horse')
+    ExecuteCommand(Config.Horse.callCommand) -- Most frameworks have a horse command
+    if Config.Debug.enabled then
+        print('^2[' .. Config.Product.shortName .. ']^7 Whistling for horse')
     end
 end)
 
@@ -229,8 +238,8 @@ RegisterNetEvent('lxr-radialmenu:client:horse:flee', function()
         SetPedFleeAttributes(horse, 0, 0)
         TaskAnimalFlee(horse, ped, -1)
         
-        if Config.Debug then
-            print('^2[' .. Config.Branding.name .. ']^7 Horse sent away')
+        if Config.Debug.enabled then
+            print('^2[' .. Config.Product.shortName .. ']^7 Horse sent away')
         end
     end
 end)
@@ -240,14 +249,15 @@ RegisterNetEvent('lxr-radialmenu:client:horse:brush', function()
     local horse = GetMount(ped)
     
     if horse and horse ~= 0 then
-        -- Play brushing animation
-        TaskStartScenarioInPlace(ped, GetHashKey('WORLD_HUMAN_HORSE_BRUSH'), -1, true, false, false, false)
+        -- Play brushing animation using config
+        local scenario = GetHashKey(Config.Animations.scenarios.horse_brush)
+        TaskStartScenarioInPlace(ped, scenario, Config.Horse.brushDuration, true, false, false, false)
         
-        Wait(5000)
+        Wait(Config.Horse.brushDuration)
         ClearPedTasks(ped)
         
-        if Config.Debug then
-            print('^2[' .. Config.Branding.name .. ']^7 Brushing horse')
+        if Config.Debug.enabled then
+            print('^2[' .. Config.Product.shortName .. ']^7 Brushing horse')
         end
     end
 end)
@@ -257,9 +267,11 @@ RegisterNetEvent('lxr-radialmenu:client:horse:feed', function()
     local horse = GetMount(ped)
     
     if horse and horse ~= 0 then
-        -- Feed horse logic
-        if Config.Debug then
-            print('^2[' .. Config.Branding.name .. ']^7 Feeding horse')
+        -- Feed horse logic with config duration
+        Wait(Config.Horse.feedDuration)
+        
+        if Config.Debug.enabled then
+            print('^2[' .. Config.Product.shortName .. ']^7 Feeding horse')
         end
     end
 end)
@@ -269,21 +281,23 @@ RegisterNetEvent('lxr-radialmenu:client:horse:calm', function()
     local horse = GetMount(ped)
     
     if horse and horse ~= 0 then
-        -- Calm horse
-        TaskAnimalCalm(horse, -1)
+        -- Calm horse with config duration
+        TaskAnimalCalm(horse, Config.Horse.calmDuration)
         
-        if Config.Debug then
-            print('^2[' .. Config.Branding.name .. ']^7 Calming horse')
+        if Config.Debug.enabled then
+            print('^2[' .. Config.Product.shortName .. ']^7 Calming horse')
         end
     end
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:horse:cargo', function()
     -- Open horse cargo/saddlebags
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Opening horse cargo')
+    if Config.Horse.cargoEnabled then
+        if Config.Debug.enabled then
+            print('^2[' .. Config.Product.shortName .. ']^7 Opening horse cargo')
+        end
+        -- Trigger inventory system
     end
-    -- Trigger inventory system
 end)
 
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -333,10 +347,12 @@ end)
 
 RegisterNetEvent('lxr-radialmenu:client:wagon:cargo', function()
     -- Open wagon cargo/trunk
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Opening wagon cargo')
+    if Config.Wagon.cargoEnabled then
+        if Config.Debug.enabled then
+            print('^2[' .. Config.Product.shortName .. ']^7 Opening wagon cargo')
+        end
+        -- Trigger inventory/trunk system
     end
-    -- Trigger inventory/trunk system
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:wagon:flip', function()
@@ -344,13 +360,13 @@ RegisterNetEvent('lxr-radialmenu:client:wagon:flip', function()
     local vehicle = GetVehiclePedIsIn(ped, false)
     
     if vehicle == 0 then
-        vehicle = GetClosestVehicle(GetEntityCoords(ped), 5.0, 0, 70)
+        vehicle = GetClosestVehicle(GetEntityCoords(ped), Config.Wagon.flipDistance, 0, 70)
     end
     
-    if vehicle ~= 0 then
+    if vehicle ~= 0 and Config.Wagon.flipEnabled then
         SetVehicleOnGroundProperly(vehicle)
-        if Config.Debug then
-            print('^2[' .. Config.Branding.name .. ']^7 Flipped wagon')
+        if Config.Debug.enabled then
+            print('^2[' .. Config.Product.shortName .. ']^7 Flipped wagon')
         end
     end
 end)
@@ -359,13 +375,13 @@ RegisterNetEvent('lxr-radialmenu:client:wagon:lantern', function()
     local ped = PlayerPedId()
     local vehicle = GetVehiclePedIsIn(ped, false)
     
-    if vehicle ~= 0 then
+    if vehicle ~= 0 and Config.Wagon.lanternToggle then
         -- Toggle wagon lanterns/lights
         local lightsOn = GetVehicleLightsState(vehicle)
         SetVehicleLights(vehicle, lightsOn == 1 and 0 or 1)
         
-        if Config.Debug then
-            print('^2[' .. Config.Branding.name .. ']^7 Toggled wagon lantern')
+        if Config.Debug.enabled then
+            print('^2[' .. Config.Product.shortName .. ']^7 Toggled wagon lantern')
         end
     end
 end)
@@ -374,54 +390,63 @@ end)
 -- CAMP ACTIONS
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 RegisterNetEvent('lxr-radialmenu:client:camp:pitch', function()
-    local ped = PlayerPedId()
-    -- Pitch camp animation and logic
-    TaskStartScenarioInPlace(ped, GetHashKey('WORLD_HUMAN_CROUCH_INSPECT'), -1, true, false, false, false)
+    if not Config.Camp.pitchEnabled then return end
     
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Pitching camp')
+    local ped = PlayerPedId()
+    local scenario = GetHashKey(Config.Animations.scenarios.camp_pitch)
+    TaskStartScenarioInPlace(ped, scenario, Config.Camp.pitchDuration, true, false, false, false)
+    
+    if Config.Debug.enabled then
+        print('^2[' .. Config.Product.shortName .. ']^7 Pitching camp')
     end
     
-    Wait(3000)
+    Wait(Config.Camp.pitchDuration)
     ClearPedTasks(ped)
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:camp:cook', function()
-    local ped = PlayerPedId()
-    -- Cooking at camp
-    TaskStartScenarioInPlace(ped, GetHashKey('WORLD_HUMAN_COOK_MEAT'), -1, true, false, false, false)
+    if not Config.Camp.cookEnabled then return end
     
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Cooking at camp')
+    local ped = PlayerPedId()
+    local scenario = GetHashKey(Config.Animations.scenarios.camp_cook)
+    TaskStartScenarioInPlace(ped, scenario, -1, true, false, false, false)
+    
+    if Config.Debug.enabled then
+        print('^2[' .. Config.Product.shortName .. ']^7 Cooking at camp')
     end
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:camp:rest', function()
-    local ped = PlayerPedId()
-    -- Resting at camp
-    TaskStartScenarioInPlace(ped, GetHashKey('WORLD_HUMAN_SIT_GROUND'), -1, true, false, false, false)
+    if not Config.Camp.restEnabled then return end
     
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Resting at camp')
+    local ped = PlayerPedId()
+    local scenario = GetHashKey(Config.Animations.scenarios.camp_rest)
+    TaskStartScenarioInPlace(ped, scenario, -1, true, false, false, false)
+    
+    if Config.Debug.enabled then
+        print('^2[' .. Config.Product.shortName .. ']^7 Resting at camp')
     end
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:camp:craft', function()
+    if not Config.Camp.craftEnabled then return end
+    
     -- Open crafting menu
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Opening crafting')
+    if Config.Debug.enabled then
+        print('^2[' .. Config.Product.shortName .. ']^7 Opening crafting')
     end
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:camp:pack', function()
     local ped = PlayerPedId()
-    TaskStartScenarioInPlace(ped, GetHashKey('WORLD_HUMAN_CROUCH_INSPECT'), -1, true, false, false, false)
+    local scenario = GetHashKey(Config.Animations.scenarios.camp_craft)
+    TaskStartScenarioInPlace(ped, scenario, Config.Camp.packDuration, true, false, false, false)
     
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Packing up camp')
+    if Config.Debug.enabled then
+        print('^2[' .. Config.Product.shortName .. ']^7 Packing up camp')
     end
     
-    Wait(3000)
+    Wait(Config.Camp.packDuration)
     ClearPedTasks(ped)
 end)
 
@@ -431,88 +456,87 @@ end)
 
 -- Check if Murphy's Clothing is available
 local function IsMurphyClothingAvailable()
-    if not Config.Clothing or not Config.Clothing.Enabled then
+    if not Config.Clothing or not Config.Clothing.enabled then
         return false
     end
     
-    local resourceState = GetResourceState(Config.Clothing.ResourceName)
+    local resourceState = GetResourceState(Config.Clothing.resourceName)
     return resourceState == 'started' or resourceState == 'starting'
 end
 
 -- Open full Murphy's Clothing menu
 RegisterNetEvent('lxr-radialmenu:client:clothing:open', function()
     if not IsMurphyClothingAvailable() then
-        if Config.Debug then
-            print('^3[' .. Config.Branding.name .. ']^7 Murphy\'s Clothing not available')
+        if Config.Debug.enabled then
+            print('^3[' .. Config.Product.shortName .. ']^7 Murphy\'s Clothing not available')
         end
         return
     end
     
-    if Config.Clothing.UseCommand then
+    if Config.Clothing.useCommand then
         -- Use command to open (default method)
-        ExecuteCommand(Config.Clothing.Command)
+        ExecuteCommand(Config.Clothing.command)
     else
         -- Use event to open (alternative method)
-        TriggerEvent(Config.Clothing.EventName)
+        TriggerEvent(Config.Clothing.eventName)
     end
     
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Opening Murphy\'s Clothing wardrobe')
+    if Config.Debug.enabled then
+        print('^2[' .. Config.Product.shortName .. ']^7 Opening Murphy\'s Clothing wardrobe')
     end
 end)
 
 -- Quick access to specific clothing categories
 RegisterNetEvent('lxr-radialmenu:client:clothing:hat', function()
     if IsMurphyClothingAvailable() then
-        -- Open full wardrobe - Murphy's Clothing handles category selection
-        ExecuteCommand(Config.Clothing.Command)
-        if Config.Debug then
-            print('^2[' .. Config.Branding.name .. ']^7 Opening hat category')
+        ExecuteCommand(Config.Clothing.command)
+        if Config.Debug.enabled then
+            print('^2[' .. Config.Product.shortName .. ']^7 Opening hat category')
         end
     end
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:clothing:coat', function()
     if IsMurphyClothingAvailable() then
-        ExecuteCommand(Config.Clothing.Command)
-        if Config.Debug then
-            print('^2[' .. Config.Branding.name .. ']^7 Opening coat category')
+        ExecuteCommand(Config.Clothing.command)
+        if Config.Debug.enabled then
+            print('^2[' .. Config.Product.shortName .. ']^7 Opening coat category')
         end
     end
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:clothing:vest', function()
     if IsMurphyClothingAvailable() then
-        ExecuteCommand(Config.Clothing.Command)
-        if Config.Debug then
-            print('^2[' .. Config.Branding.name .. ']^7 Opening vest category')
+        ExecuteCommand(Config.Clothing.command)
+        if Config.Debug.enabled then
+            print('^2[' .. Config.Product.shortName .. ']^7 Opening vest category')
         end
     end
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:clothing:bandana', function()
     if IsMurphyClothingAvailable() then
-        ExecuteCommand(Config.Clothing.Command)
-        if Config.Debug then
-            print('^2[' .. Config.Branding.name .. ']^7 Opening bandana/mask category')
+        ExecuteCommand(Config.Clothing.command)
+        if Config.Debug.enabled then
+            print('^2[' .. Config.Product.shortName .. ']^7 Opening bandana/mask category')
         end
     end
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:clothing:gloves', function()
     if IsMurphyClothingAvailable() then
-        ExecuteCommand(Config.Clothing.Command)
-        if Config.Debug then
-            print('^2[' .. Config.Branding.name .. ']^7 Opening gloves category')
+        ExecuteCommand(Config.Clothing.command)
+        if Config.Debug.enabled then
+            print('^2[' .. Config.Product.shortName .. ']^7 Opening gloves category')
         end
     end
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:clothing:boots', function()
     if IsMurphyClothingAvailable() then
-        ExecuteCommand(Config.Clothing.Command)
-        if Config.Debug then
-            print('^2[' .. Config.Branding.name .. ']^7 Opening boots category')
+        ExecuteCommand(Config.Clothing.command)
+        if Config.Debug.enabled then
+            print('^2[' .. Config.Product.shortName .. ']^7 Opening boots category')
         end
     end
 end)
@@ -525,14 +549,14 @@ end)
 local function ToggleClothingComponent(component)
     if IsMurphyClothingAvailable() then
         -- If Murphy's is available, open the full wardrobe instead
-        ExecuteCommand(Config.Clothing.Command)
+        ExecuteCommand(Config.Clothing.command)
         return
     end
     
     -- Legacy fallback code for basic clothing toggle
     local ped = PlayerPedId()
-    if Config.Debug then
-        print('^3[' .. Config.Branding.name .. ']^7 Legacy clothing toggle: ' .. component)
+    if Config.Debug.enabled then
+        print('^3[' .. Config.Product.shortName .. ']^7 Legacy clothing toggle: ' .. component)
     end
     -- Add basic clothing toggle logic here if needed
 end
@@ -554,33 +578,35 @@ end)
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 RegisterNetEvent('lxr-radialmenu:client:interaction:greet', function()
     local ped = PlayerPedId()
-    TaskStartScenarioInPlace(ped, GetHashKey('WORLD_HUMAN_GREET'), 3000, true, false, false, false)
+    local scenario = GetHashKey(Config.Animations.scenarios.greet)
+    TaskStartScenarioInPlace(ped, scenario, 3000, true, false, false, false)
     
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Greeting')
+    if Config.Debug.enabled then
+        print('^2[' .. Config.Product.shortName .. ']^7 Greeting')
     end
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:interaction:antagonize', function()
     local ped = PlayerPedId()
-    -- Antagonize animation
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Antagonizing')
+    local scenario = GetHashKey(Config.Animations.scenarios.antagonize)
+    
+    if Config.Debug.enabled then
+        print('^2[' .. Config.Product.shortName .. ']^7 Antagonizing')
     end
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:interaction:lasso', function()
-    -- Lasso player logic
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Using lasso')
+    if Config.Interactions.enableLassoSystem then
+        if Config.Debug.enabled then
+            print('^2[' .. Config.Product.shortName .. ']^7 Using lasso')
+        end
     end
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:interaction:carry', function()
-    -- Carry/kidnapping system
-    if Config.EnableCarrySystem then
-        if Config.Debug then
-            print('^2[' .. Config.Branding.name .. ']^7 Carrying person')
+    if Config.Interactions.enableCarrySystem then
+        if Config.Debug.enabled then
+            print('^2[' .. Config.Product.shortName .. ']^7 Carrying person')
         end
         -- Implement carry logic
     end
@@ -590,16 +616,25 @@ end)
 -- INVENTORY/SATCHEL
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 RegisterNetEvent('lxr-radialmenu:client:inventory:open', function()
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Opening satchel')
+    if Config.Debug.enabled then
+        print('^2[' .. Config.Product.shortName .. ']^7 Opening satchel')
     end
+    
     -- Trigger inventory system based on framework
-    if currentFramework == 'VORP' then
-        ExecuteCommand('satchel')
-    elseif currentFramework == 'RSG' then
-        TriggerEvent('rsg-inventory:client:openinventory')
+    local inventoryCommand = Config.Inventory.commands[currentFramework:lower()] or Config.Inventory.commands.standalone
+    
+    if Config.Inventory.system == 'auto' then
+        if currentFramework == 'vorp' then
+            ExecuteCommand(Config.Inventory.commands.vorp)
+        elseif currentFramework == 'rsg' then
+            TriggerEvent(Config.Inventory.events.rsg)
+        elseif currentFramework == 'lxrcore' then
+            TriggerEvent(Config.Inventory.events.lxr)
+        else
+            ExecuteCommand(inventoryCommand)
+        end
     else
-        ExecuteCommand('inventory')
+        ExecuteCommand(inventoryCommand)
     end
 end)
 
@@ -608,17 +643,49 @@ end)
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 RegisterNetEvent('lxr-radialmenu:client:emote:smoke', function()
     local ped = PlayerPedId()
-    TaskStartScenarioInPlace(ped, GetHashKey('WORLD_HUMAN_SMOKE'), -1, true, false, false, false)
+    local scenario = GetHashKey(Config.Animations.scenarios.smoke)
+    TaskStartScenarioInPlace(ped, scenario, -1, true, false, false, false)
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:emote:drink', function()
     local ped = PlayerPedId()
-    TaskStartScenarioInPlace(ped, GetHashKey('WORLD_HUMAN_DRINK'), -1, true, false, false, false)
+    local scenario = GetHashKey(Config.Animations.scenarios.drink)
+    TaskStartScenarioInPlace(ped, scenario, -1, true, false, false, false)
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:emote:sit', function()
     local ped = PlayerPedId()
-    TaskStartScenarioInPlace(ped, GetHashKey('WORLD_HUMAN_SIT_GROUND'), -1, true, false, false, false)
+    local scenario = GetHashKey(Config.Animations.scenarios.sit)
+    TaskStartScenarioInPlace(ped, scenario, -1, true, false, false, false)
+end)
+
+RegisterNetEvent('lxr-radialmenu:client:emote:lean', function()
+    local ped = PlayerPedId()
+    local scenario = GetHashKey(Config.Animations.scenarios.lean)
+    TaskStartScenarioInPlace(ped, scenario, -1, true, false, false, false)
+end)
+
+RegisterNetEvent('lxr-radialmenu:client:emote:cancel', function()
+    local ped = PlayerPedId()
+    ClearPedTasks(ped)
+end)
+
+-- Open animations menu (RSG Animations or similar)
+RegisterNetEvent('lxr-radialmenu:client:emote:menu', function()
+    if Config.Animations.enabled and Config.Animations.rsgAnimations.enabled then
+        if Config.Animations.rsgAnimations.useCommand then
+            ExecuteCommand(Config.Animations.rsgAnimations.command)
+        else
+            TriggerEvent(Config.Animations.rsgAnimations.eventName)
+        end
+    end
+end)
+
+-- Walking style menu
+RegisterNetEvent('lxr-radialmenu:client:emote:walkstyle', function()
+    if Config.WalkingStyles.enabled then
+        ExecuteCommand(Config.WalkingStyles.command)
+    end
 end)
 
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -626,19 +693,28 @@ end)
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 RegisterNetEvent('lxr-radialmenu:client:weapon:holster', function()
     local ped = PlayerPedId()
+    
+    if Config.Weapons.autoHolster then
+        Wait(Config.Weapons.holsterDelay)
+    end
+    
     SetCurrentPedWeapon(ped, GetHashKey('WEAPON_UNARMED'), true)
     
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Holstered weapon')
+    if Config.Debug.enabled then
+        print('^2[' .. Config.Product.shortName .. ']^7 Holstered weapon')
     end
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:weapon:clean', function()
     local ped = PlayerPedId()
-    TaskStartScenarioInPlace(ped, GetHashKey('WORLD_HUMAN_CLEAN_WEAPON'), -1, true, false, false, false)
+    local scenario = GetHashKey(Config.Weapons.cleaningAnimation)
+    TaskStartScenarioInPlace(ped, scenario, Config.Weapons.cleaningDuration, true, false, false, false)
     
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Cleaning weapon')
+    Wait(Config.Weapons.cleaningDuration)
+    ClearPedTasks(ped)
+    
+    if Config.Debug.enabled then
+        print('^2[' .. Config.Product.shortName .. ']^7 Cleaning weapon')
     end
 end)
 
