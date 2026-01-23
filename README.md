@@ -105,6 +105,7 @@ Transform your RedM server's player experience with the most advanced radial men
 ## 🔧 Framework Support
 
 **Standalone with Auto-Detection**
+- ✅ LXRCore (github.com/lxrcore) - **Priority Framework**
 - ✅ VORP Core
 - ✅ RSG Core
 - ✅ RedEM:RP

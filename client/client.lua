@@ -21,12 +21,24 @@
 local isMenuOpen = false
 local currentFramework = nil
 local PlayerData = {}
+local LXRCore = nil  -- LXRCore framework object
 
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 -- FRAMEWORK AUTO-DETECTION
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 local function DetectFramework()
     if Config.AutoDetectFramework then
+        -- Try to detect LXRCore (github.com/lxrcore)
+        if GetResourceState('lxr-core') == 'started' or GetResourceState('lxrcore') == 'started' then
+            currentFramework = 'LXRCore'
+            -- Get LXRCore object
+            exports['lxr-core']:GetCoreObject(function(core)
+                LXRCore = core
+                PlayerData = LXRCore.Functions.GetPlayerData()
+            end)
+            return 'LXRCore'
+        end
+        
         -- Try to detect VORP
         if GetResourceState('vorp_core') == 'started' then
             currentFramework = 'VORP'
@@ -79,7 +91,10 @@ end)
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 local function GetPlayerJob()
     -- Get player job based on framework
-    if currentFramework == 'VORP' and PlayerData then
+    if currentFramework == 'LXRCore' and LXRCore then
+        local playerJob = LXRCore.Functions.GetPlayerData().job
+        return playerJob and playerJob.name or 'unemployed'
+    elseif currentFramework == 'VORP' and PlayerData then
         return PlayerData.job or 'unemployed'
     elseif currentFramework == 'RSG' then
         -- RSG job detection
@@ -87,6 +102,9 @@ local function GetPlayerJob()
     elseif currentFramework == 'RedEM' then
         -- RedEM job detection
         return 'unemployed'  -- Implement RedEM job detection
+    elseif currentFramework == 'QBR' then
+        -- QBR job detection
+        return 'unemployed'  -- Implement QBR job detection
     end
     
     return 'unemployed'

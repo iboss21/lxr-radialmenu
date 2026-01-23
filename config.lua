@@ -34,7 +34,14 @@ Config.Branding = {
 -- FRAMEWORK SETTINGS - Standalone with Auto-Detection
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Config.Framework = 'standalone'  -- Standalone - auto-detects RedM frameworks
-Config.AutoDetectFramework = true  -- Auto-detect QBCore, RSG, RedEM:RP, VORP, etc.
+Config.AutoDetectFramework = true  -- Auto-detect LXRCore, QBCore, RSG, RedEM:RP, VORP, etc.
+
+-- Supported Frameworks:
+-- ✅ LXRCore (github.com/lxrcore) - Priority detection
+-- ✅ VORP Core
+-- ✅ RSG Core
+-- ✅ RedEM:RP / REDEMRP2k23
+-- ✅ QBR (QBCore for RedM)
 
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 -- GENERAL SETTINGS
@@ -86,8 +93,31 @@ Config.Themes = {
 Config.Theme = Config.Themes[Config.CurrentTheme]
 
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
--- MULTI-LANGUAGE SUPPORT
+-- MURPHY'S CLOTHING INTEGRATION
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Config.Clothing = {
+    Enabled = true,                  -- Enable Murphy's Clothing integration
+    ResourceName = 'murphy_clothing', -- Murphy's Clothing resource name
+    UseCommand = true,               -- Use command to open clothing (if false, uses event)
+    Command = 'ClothesManagement',   -- Command from Murphy's config (Config.ClothesManagement.Command)
+    
+    -- Alternative: Use native event trigger if command doesn't work
+    -- Set UseCommand to false and configure the event below
+    EventName = 'murphy_clothing:client:openMenu',  -- Custom event if needed
+    
+    -- Quick clothing categories accessible from radial submenu
+    QuickAccess = {
+        enabled = true,
+        categories = {
+            { id = 'hat', label = 'Hat', category = 'hats' },
+            { id = 'coat', label = 'Coat', category = 'coats' },
+            { id = 'vest', label = 'Vest', category = 'vests' },
+            { id = 'bandana', label = 'Bandana', category = 'masks' },
+            { id = 'gloves', label = 'Gloves', category = 'gloves' },
+            { id = 'boots', label = 'Boots', category = 'boots' }
+        }
+    }
+}
 Config.Language = 'en'  -- 'en', 'es', 'fr', 'de', 'pt'
 
 Config.Locales = {
@@ -105,8 +135,61 @@ Config.Locales = {
 }
 
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
--- MURPHY'S CLOTHING INTEGRATION
+-- RSG ANIMATIONS INTEGRATION
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Config.Animations = {
+    Enabled = true,                      -- Enable RSG Animations integration
+    ResourceName = 'rsg-animations',     -- RSG Animations resource name
+    UseCommand = true,                   -- Use command to open animations menu
+    Command = 'anim',                    -- Command from RSG config
+    
+    -- Quick access categories in radial menu
+    QuickCategories = {
+        gestures = { label = 'Gestures', icon = '👋' },
+        emotes = { label = 'Emotes', icon = '🎭' },
+        dances = { label = 'Dances', icon = '💃' }
+    }
+}
+
+-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+-- WALKING STYLES SYSTEM (The Land of Wolves)
+-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Config.WalkingStyles = {
+    Enabled = true,
+    Command = 'walkstyle',  -- Command to open walking styles menu
+    ResetCommand = 'resetwalk',  -- Command to reset to normal walk
+    
+    -- Available walking styles for The Land of Wolves
+    Styles = {
+        -- Normal/Healthy Walks
+        { id = 'normal', label = 'Normal Walk', clipset = 'NONE' },
+        { id = 'confident', label = 'Confident Stride', clipset = 'clipset@move_m@core@1h' },
+        { id = 'tough', label = 'Tough Guy', clipset = 'move_m@tough_guy' },
+        { id = 'swagger', label = 'Swagger', clipset = 'move_m@swagger' },
+        { id = 'feminine', label = 'Feminine', clipset = 'move_f@femme' },
+        { id = 'elegant', label = 'Elegant Lady', clipset = 'move_f@elegant' },
+        
+        -- Injured/Drunk Walks
+        { id = 'drunk', label = 'Drunk', clipset = 'move_m@drunk@moderatedrunk' },
+        { id = 'verydrun', label = 'Very Drunk', clipset = 'move_m@drunk@verydrunk' },
+        { id = 'injured_leg', label = 'Injured Leg', clipset = 'move_injured_generic' },
+        { id = 'injured_torso', label = 'Injured Torso', clipset = 'move_m@injured' },
+        
+        -- Character Walks
+        { id = 'brave', label = 'Brave', clipset = 'move_m@brave' },
+        { id = 'tough_lady', label = 'Tough Lady', clipset = 'move_f@tough' },
+        { id = 'gunslinger', label = 'Gunslinger', clipset = 'move_m@gunslinger' },
+        { id = 'lawman', label = 'Lawman', clipset = 'move_m@lawman' },
+        { id = 'outlaw', label = 'Outlaw', clipset = 'move_m@outlaw' },
+        
+        -- Special Walks
+        { id = 'scared', label = 'Scared', clipset = 'move_m@scared' },
+        { id = 'sad', label = 'Sad', clipset = 'move_m@sad' },
+        { id = 'angry', label = 'Angry', clipset = 'move_m@angry' },
+        { id = 'old', label = 'Old Person', clipset = 'move_m@old' },
+        { id = 'fancy', label = 'Fancy', clipset = 'move_m@fancy' }
+    }
+}
 Config.Clothing = {
     Enabled = true,                  -- Enable Murphy's Clothing integration
     ResourceName = 'murphy_clothing', -- Murphy's Clothing resource name
@@ -208,15 +291,16 @@ Config.MenuItems = {
     },
     {
         id = 'emotes',
-        label = 'Emotes',
+        label = 'Gestures',
         icon = '🎭',
         items = {
+            { id = 'anim_menu', label = 'Open Animations', action = 'emote:menu' },
+            { id = 'walkstyle_menu', label = 'Walking Style', action = 'emote:walkstyle' },
             { id = 'smoke', label = 'Smoke Cigarette', action = 'emote:smoke' },
             { id = 'drink', label = 'Drink Whiskey', action = 'emote:drink' },
             { id = 'sit', label = 'Sit Down', action = 'emote:sit' },
             { id = 'lean', label = 'Lean', action = 'emote:lean' },
-            { id = 'dance', label = 'Dance', action = 'emote:dance' },
-            { id = 'pray', label = 'Pray', action = 'emote:pray' }
+            { id = 'cancel', label = 'Cancel Animation', action = 'emote:cancel' }
         }
     },
     {
