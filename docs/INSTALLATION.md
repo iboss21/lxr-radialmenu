@@ -48,23 +48,190 @@ start lxr-radialmenu
 
 ## ⚙️ Configuration
 
+### Everything is Centralized in config.lua
+
+**No need to edit client.lua or server.lua!** All configuration is now in one place.
+
 ### Basic Configuration
 
 Edit `config.lua` to customize your setup:
 
 ```lua
--- Choose your visual theme
-Config.CurrentTheme = 'wolves'  -- Options: 'wolves', 'saloon', 'frontier'
+-- Choose your visual theme (15 premium themes)
+Config.Theme.current = 'wolves'  -- wolves, saloon, frontier, midnight, blood_moon, etc.
 
 -- Interaction behavior
-Config.HoldMode = false  -- true = hold to activate, false = click to activate
-Config.HoldTime = 500    -- Milliseconds to hold (if HoldMode is true)
+Config.Menu.holdMode = false  -- true = hold to activate, false = click to activate
+Config.Menu.holdTime = 500    -- Milliseconds to hold (if holdMode is true)
 
 -- Visual settings
-Config.BackgroundBlur = true    -- Blur background when menu is open
-Config.SoundEffects = true      -- Enable sound effects
-Config.MenuRadius = 150         -- Size of the radial menu
-Config.AnimationSpeed = 0.3     -- Animation speed in seconds
+Config.Menu.backgroundBlur = true    -- Blur background when menu is open
+Config.Menu.blurStrength = 5         -- Blur intensity
+Config.Sounds.enabled = true         -- Enable sound effects
+Config.Menu.radius = 150             -- Size of the radial menu
+Config.Menu.iconSize = 50            -- Icon size
+Config.Menu.animationSpeed = 0.3     -- Animation speed in seconds
+Config.Menu.animationStyle = 'elastic'  -- elastic, smooth, instant, bounce
+
+-- Performance optimization
+Config.Performance.enableCache = true
+Config.Performance.profile = 'ultra'  -- low, medium, high, ultra
+```
+
+### Comprehensive Configuration Sections
+
+The config.lua now includes **everything**:
+
+#### 🎨 Theme System (15 Premium Themes)
+- Wolves, Saloon, Frontier, Midnight, Blood Moon
+- Desert Dawn, Prairie, Parchment, Gunslinger
+- Bounty Hunter, Sheriff Badge, Campfire, Ghost Town
+- Native Spirit, Gold Rush
+- Full customization of colors, backgrounds, effects
+
+#### 🌍 Language & Localization
+```lua
+Config.Language.current = 'en'  -- en, es, fr, de, pt, it, ru, pl, tr, nl
+Config.Locales.en = { ... }  -- All text strings
+```
+
+#### 🎭 Animations & Scenarios
+```lua
+Config.Animations.scenarios = {
+    horse_brush = 'WORLD_HUMAN_HORSE_BRUSH',
+    camp_cook = 'WORLD_HUMAN_COOK_MEAT',
+    smoke = 'WORLD_HUMAN_SMOKE',
+    -- All scenario hashes centralized
+}
+```
+
+#### 🚶 Walking Styles (20+ Styles)
+```lua
+Config.WalkingStyles.enabled = true
+Config.WalkingStyles.command = 'walkstyle'
+Config.WalkingStyles.styles = {
+    { id = 'confident', label = 'Confident Stride', clipset = 'clipset@move_m@core@1h' },
+    { id = 'gunslinger', label = 'Gunslinger', clipset = 'move_m@gunslinger' },
+    -- 20+ walking styles with clipsets
+}
+```
+
+#### 👔 Clothing System (Murphy's Clothing)
+```lua
+Config.Clothing.enabled = true
+Config.Clothing.resourceName = 'murphy_clothing'
+Config.Clothing.command = 'ClothesManagement'
+Config.Clothing.quickAccess.enabled = true
+```
+
+#### 📋 Menu Items (All Configurable)
+```lua
+Config.MenuItems = {
+    {
+        id = 'horse',
+        label = 'Horse',
+        icon = '🐴',
+        enabled = true,
+        items = { ... }
+    },
+    -- All menu items with enable/disable flags
+}
+```
+
+#### 💼 Job-Specific Menus
+```lua
+Config.JobMenus = {
+    sheriff = { ... },
+    doctor = { ... },
+    blacksmith = { ... },
+    stagecoach = { ... },
+    bountyhunter = { ... },
+    saloon = { ... },
+    gunsmith = { ... }
+}
+```
+
+#### 🐴 Horse System
+```lua
+Config.Horse.callDistance = 50.0
+Config.Horse.callCommand = 'horse'
+Config.Horse.brushDuration = 5000
+Config.Horse.feedDuration = 3000
+Config.Horse.cargoEnabled = true
+```
+
+#### 🛒 Wagon System
+```lua
+Config.Wagon.doorSpeed = 1.0
+Config.Wagon.cargoEnabled = true
+Config.Wagon.flipEnabled = true
+Config.Wagon.flipDistance = 5.0
+```
+
+#### 🏕️ Camp System
+```lua
+Config.Camp.pitchEnabled = true
+Config.Camp.pitchDuration = 3000
+Config.Camp.cookEnabled = true
+Config.Camp.restHealing = 20  -- HP to restore
+```
+
+#### 🔫 Weapon System
+```lua
+Config.Weapons.autoHolster = false
+Config.Weapons.holsterDelay = 500
+Config.Weapons.cleaningDuration = 5000
+Config.Weapons.cleaningAnimation = 'WORLD_HUMAN_CLEAN_WEAPON'
+```
+
+#### 🤝 Interactions
+```lua
+Config.Interactions.distance = 2.0
+Config.Interactions.enableCarrySystem = true
+Config.Interactions.enableLassoSystem = true
+Config.Interactions.cooldowns = { ... }
+```
+
+#### 📦 Inventory Integration
+```lua
+Config.Inventory.system = 'auto'  -- auto-detects framework
+Config.Inventory.commands = {
+    vorp = 'satchel',
+    rsg = 'inventory',
+    lxr = 'inventory'
+}
+```
+
+#### ⚙️ Commands (All in One Place)
+```lua
+Config.Commands = {
+    openMenu = 'radialmenu',
+    callHorse = 'horse',
+    clothing = 'ClothesManagement',
+    animations = 'anim',
+    walkstyle = 'walkstyle',
+    inventory = 'inventory',
+    menuInfo = 'radialmenu:info'
+}
+```
+
+#### 🔊 Sound Effects
+```lua
+Config.Sounds.enabled = true
+Config.Sounds.volume = 0.5
+Config.Sounds.sounds = {
+    open = 'menu_open',
+    select = 'menu_select',
+    -- All sound definitions
+}
+```
+
+#### 🐛 Debug Settings
+```lua
+Config.Debug.enabled = false
+Config.Debug.printEvents = false
+Config.Debug.printActions = false
+Config.Debug.showPerformance = false
 ```
 
 ### Framework Detection

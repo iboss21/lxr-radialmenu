@@ -152,23 +152,94 @@ The settings interface features:
 
 ## 📝 Configuration
 
+**Everything is now centralized in `config.lua`** - no need to edit `client.lua` or `server.lua`!
+
 Edit `config.lua` to customize:
 
 ```lua
--- Choose your theme
-Config.CurrentTheme = 'wolves'  -- 'wolves', 'saloon', or 'frontier'
+-- Choose your theme (15 premium themes available)
+Config.Theme.current = 'wolves'  -- wolves, saloon, frontier, midnight, etc.
 
 -- Interaction mode
-Config.HoldMode = false  -- true = hold to activate, false = click
+Config.Menu.holdMode = false  -- true = hold to activate, false = click
+Config.Menu.holdTime = 500  -- ms to hold if holdMode enabled
 
 -- Visual settings
-Config.BackgroundBlur = true
-Config.SoundEffects = true
+Config.Menu.backgroundBlur = true
+Config.Menu.blurStrength = 5
+Config.Sounds.enabled = true
 
 -- Menu behavior
-Config.MenuRadius = 150
-Config.AnimationSpeed = 0.3
+Config.Menu.radius = 150
+Config.Menu.iconSize = 50
+Config.Menu.animationSpeed = 0.3
+Config.Menu.animationStyle = 'elastic'  -- 'elastic', 'smooth', 'instant', 'bounce'
+
+-- Performance optimization
+Config.Performance.enableCache = true
+Config.Performance.profile = 'ultra'  -- 'low', 'medium', 'high', 'ultra'
+
+-- Clothing integration (Murphy's Clothing)
+Config.Clothing.enabled = true
+Config.Clothing.resourceName = 'murphy_clothing'
+Config.Clothing.command = 'ClothesManagement'
+
+-- Animations integration (RSG Animations)
+Config.Animations.enabled = true
+Config.Animations.rsgAnimations.enabled = true
+Config.Animations.rsgAnimations.command = 'anim'
+
+-- Walking styles
+Config.WalkingStyles.enabled = true
+Config.WalkingStyles.command = 'walkstyle'
+
+-- Horse system
+Config.Horse.callDistance = 50.0
+Config.Horse.brushDuration = 5000
+Config.Horse.cargoEnabled = true
+
+-- Camp system
+Config.Camp.pitchEnabled = true
+Config.Camp.cookEnabled = true
+Config.Camp.restHealing = 20  -- HP to restore
+
+-- Weapons
+Config.Weapons.cleaningDuration = 5000
+Config.Weapons.autoHolster = false
+
+-- Debug mode (disable in production)
+Config.Debug.enabled = false
+Config.Debug.printEvents = false
+Config.Debug.printActions = false
 ```
+
+### Complete Configuration Sections
+
+The config.lua now includes everything you need:
+- **Product Information** - Branding, version, license
+- **Performance Settings** - Cache, optimization profiles
+- **Framework Detection** - Auto-detect LXRCore, VORP, RSG, etc.
+- **Menu Settings** - Keybinds, behavior, visual options
+- **15 Premium Themes** - Wolves, Saloon, Frontier, Midnight, Blood Moon, and more
+- **Language/Localization** - Multi-language support
+- **Animations & Scenarios** - All scenario hashes centralized
+- **Walking Styles** - 20+ walking styles with clipsets
+- **Clothing System** - Murphy's Clothing integration
+- **Menu Items** - All menu items with enable/disable flags
+- **Job Menus** - Sheriff, Doctor, Blacksmith, Stagecoach, etc.
+- **Blip System** - Map markers configuration
+- **Interactions** - Distance, cooldowns, system toggles
+- **Permissions** - Access control settings
+- **Commands** - All command names in one place
+- **Sound Effects** - Volume, paths, enable/disable
+- **Inventory Integration** - Framework-specific settings
+- **Weapon System** - Holster, cleaning, degradation
+- **Horse System** - Call distance, care durations, cargo
+- **Wagon System** - Doors, cargo, flip, lantern
+- **Camp System** - Pitch, cook, rest, craft, pack
+- **Event Names** - All client and server events centralized
+
+No more editing client.lua or server.lua!
 
 ---
 
