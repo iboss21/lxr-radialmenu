@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Land of Wolves - Radial Menu Demo</title>
+    <link rel="stylesheet" href="settings-style.css">
+    <style>
+        /* Override for demo */
+        #settings-container {
+            display: block !important;
+            opacity: 1 !important;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Dust Particles Overlay -->
+    <div class="dust-particles"></div>
+    
+    <!-- Main Settings Container -->
+    <div id="settings-container">
+        <!-- Header Section -->
+        <header class="settings-header">
+            <div class="header-left">
+                <div class="title-badge">
+                    <h1 class="main-title">THE LAND OF WOLVES</h1>
+                    <div class="subtitle">Radial Menu Ledger</div>
+                    <div class="branding">www.wolves.land</div>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="character-badge">
+                    <div class="portrait-frame">
+                        <div class="portrait-image"></div>
+                        <div class="frame-ornament"></div>
+                    </div>
+                    <div class="character-info">
+                        <div class="character-name">John Marston</div>
+                        <div class="character-id">Citizen ID - 1899</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="settings-content">
+            <!-- Left Sidebar Navigation -->
+            <aside class="sidebar-navigation">
+                <div class="nav-tabs">
+                    <button class="nav-tab active" data-tab="radial-menu">
+                        <span class="tab-rivet"></span>
+                        <span class="tab-label">Radial Menu</span>
+                    </button>
+                    <button class="nav-tab" data-tab="general">
+                        <span class="tab-rivet"></span>
+                        <span class="tab-label">General</span>
+                    </button>
+                    <button class="nav-tab" data-tab="customize">
+                        <span class="tab-rivet"></span>
+                        <span class="tab-label">Customize Options</span>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Panel -->
+            <main class="main-panel" id="main-panel">
+                <!-- Radial Menu Tab -->
+                <div class="tab-content active" data-content="radial-menu">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Radial Menu Configuration</h2>
+                        <div class="ornamental-line"></div>
+                    </div>
+
+                    <div class="settings-grid">
+                        <!-- Theme Setting -->
+                        <div class="setting-row">
+                            <label class="setting-label">
+                                <span class="label-text">Theme</span>
+                                <span class="label-desc">Visual appearance of the menu</span>
+                            </label>
+                            <div class="setting-control">
+                                <select class="western-select" id="theme-select">
+                                    <option value="wolves">Wolf Pack (Default)</option>
+                                    <option value="saloon">Saloon Night</option>
+                                    <option value="frontier">Frontier</option>
+                                    <option value="midnight">Midnight Outlaw</option>
+                                    <option value="blood_moon">Blood Moon</option>
+                                    <option value="desert_dawn">Desert Dawn</option>
+                                    <option value="prairie">Prairie Gold</option>
+                                    <option value="gunslinger">Gunslinger</option>
+                                    <option value="bounty_hunter">Bounty Hunter</option>
+                                    <option value="campfire">Campfire</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Background Blur -->
+                        <div class="setting-row">
+                            <label class="setting-label">
+                                <span class="label-text">Background Blur</span>
+                                <span class="label-desc">Soften the background when menu is open</span>
+                            </label>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="bg-blur" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Radial Behaviour -->
+                        <div class="setting-row">
+                            <label class="setting-label">
+                                <span class="label-text">Radial Behaviour</span>
+                                <span class="label-desc">How to activate menu items</span>
+                            </label>
+                            <div class="setting-control">
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="behaviour" value="press" checked>
+                                        <span class="radio-custom"></span>
+                                        <span class="radio-label">Press</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="behaviour" value="hold">
+                                        <span class="radio-custom"></span>
+                                        <span class="radio-label">Hold</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sound Effect -->
+                        <div class="setting-row">
+                            <label class="setting-label">
+                                <span class="label-text">Sound Effect</span>
+                                <span class="label-desc">Enable audio feedback</span>
+                            </label>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="sound-effect" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Colored Menus -->
+                        <div class="setting-row">
+                            <label class="setting-label">
+                                <span class="label-text">Colored Menus</span>
+                                <span class="label-desc">Apply color to menu categories</span>
+                            </label>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="colored-menus" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customize Options Tab -->
+                <div class="tab-content" data-content="customize">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Customize Menu Options</h2>
+                        <div class="ornamental-line"></div>
+                    </div>
+
+                    <div class="customize-layout">
+                        <div class="commands-panel">
+                            <h3 class="panel-subtitle">Menu Commands</h3>
+                            <div class="commands-list" id="commands-list">
+                                <!-- Command items -->
+                                <div class="command-item">
+                                    <div class="command-content">
+                                        <span class="command-icon">📜</span>
+                                        <span class="command-label">Ledger</span>
+                                    </div>
+                                    <div class="command-actions">
+                                        <button class="action-btn drag-handle">⋮⋮</button>
+                                        <button class="action-btn delete">🗑️</button>
+                                    </div>
+                                </div>
+                                <div class="command-item">
+                                    <div class="command-content">
+                                        <span class="command-icon">📨</span>
+                                        <span class="command-label">Telegraph</span>
+                                    </div>
+                                    <div class="command-actions">
+                                        <button class="action-btn drag-handle">⋮⋮</button>
+                                        <button class="action-btn delete">🗑️</button>
+                                    </div>
+                                </div>
+                                <div class="command-item">
+                                    <div class="command-content">
+                                        <span class="command-icon">🎒</span>
+                                        <span class="command-label">Saddlebags</span>
+                                    </div>
+                                    <div class="command-actions">
+                                        <button class="action-btn drag-handle">⋮⋮</button>
+                                        <button class="action-btn delete">🗑️</button>
+                                    </div>
+                                </div>
+                                <div class="command-item">
+                                    <div class="command-content">
+                                        <span class="command-icon">🤠</span>
+                                        <span class="command-label">Wardrobe</span>
+                                    </div>
+                                    <div class="command-actions">
+                                        <button class="action-btn drag-handle">⋮⋮</button>
+                                        <button class="action-btn delete">🗑️</button>
+                                    </div>
+                                </div>
+                                <div class="command-item">
+                                    <div class="command-content">
+                                        <span class="command-icon">🎭</span>
+                                        <span class="command-label">Gestures</span>
+                                    </div>
+                                    <div class="command-actions">
+                                        <button class="action-btn drag-handle">⋮⋮</button>
+                                        <button class="action-btn delete">🗑️</button>
+                                    </div>
+                                </div>
+                                <div class="command-item">
+                                    <div class="command-content">
+                                        <span class="command-icon">💰</span>
+                                        <span class="command-label">Money Pouch</span>
+                                    </div>
+                                    <div class="command-actions">
+                                        <button class="action-btn drag-handle">⋮⋮</button>
+                                        <button class="action-btn delete">🗑️</button>
+                                    </div>
+                                </div>
+                                <div class="command-item">
+                                    <div class="command-content">
+                                        <span class="command-icon">⚒️</span>
+                                        <span class="command-label">Trade</span>
+                                    </div>
+                                    <div class="command-actions">
+                                        <button class="action-btn drag-handle">⋮⋮</button>
+                                        <button class="action-btn delete">🗑️</button>
+                                    </div>
+                                </div>
+                                <div class="command-item">
+                                    <div class="command-content">
+                                        <span class="command-icon">🐴</span>
+                                        <span class="command-label">Horse/Wagon</span>
+                                    </div>
+                                    <div class="command-actions">
+                                        <button class="action-btn drag-handle">⋮⋮</button>
+                                        <button class="action-btn delete">🗑️</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="revert-button">
+                                <span class="button-icon">↻</span>
+                                Revert To Default
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Live Preview Panel -->
+            <aside class="preview-panel">
+                <div class="preview-header">
+                    <h3 class="preview-title">Live Preview</h3>
+                    <div class="preview-subtitle">Radial Menu Compass</div>
+                </div>
+                
+                <div class="preview-content">
+                    <div class="radial-preview" id="radial-preview">
+                        <!-- Center Badge -->
+                        <div class="preview-center">
+                            <div class="center-badge">🐺</div>
+                        </div>
+                        
+                        <!-- Radial Items -->
+                        <div class="preview-items" id="preview-items">
+                            <div class="preview-item" style="transform: translate(0px, -120px);">
+                                <span class="preview-item-icon">📜</span>
+                                <span class="preview-item-label">Ledger</span>
+                            </div>
+                            <div class="preview-item" style="transform: translate(85px, -85px);">
+                                <span class="preview-item-icon">📨</span>
+                                <span class="preview-item-label">Telegraph</span>
+                            </div>
+                            <div class="preview-item" style="transform: translate(120px, 0px);">
+                                <span class="preview-item-icon">🎒</span>
+                                <span class="preview-item-label">Saddlebags</span>
+                            </div>
+                            <div class="preview-item" style="transform: translate(85px, 85px);">
+                                <span class="preview-item-icon">🤠</span>
+                                <span class="preview-item-label">Wardrobe</span>
+                            </div>
+                            <div class="preview-item" style="transform: translate(0px, 120px);">
+                                <span class="preview-item-icon">🎭</span>
+                                <span class="preview-item-label">Gestures</span>
+                            </div>
+                            <div class="preview-item" style="transform: translate(-85px, 85px);">
+                                <span class="preview-item-icon">💰</span>
+                                <span class="preview-item-label">Money</span>
+                            </div>
+                            <div class="preview-item" style="transform: translate(-120px, 0px);">
+                                <span class="preview-item-icon">⚒️</span>
+                                <span class="preview-item-label">Trade</span>
+                            </div>
+                            <div class="preview-item" style="transform: translate(-85px, -85px);">
+                                <span class="preview-item-icon">🐴</span>
+                                <span class="preview-item-label">Horse</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="preview-footer">
+                    <div class="branding-footer">
+                        <div class="footer-logo">iBoss</div>
+                        <div class="footer-text">www.wolves.land</div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Close Button -->
+        <button class="close-settings" id="close-settings">
+            <span class="close-icon">✕</span>
+        </button>
+    </div>
+
+    <script>
+        // Simple tab switching for demo
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                this.classList.add('active');
+                const tabName = this.dataset.tab;
+                document.querySelector(`[data-content="${tabName}"]`).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

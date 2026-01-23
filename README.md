@@ -124,6 +124,8 @@ Transform your RedM server's player experience with the most advanced radial men
 4. Configure `config.lua` to your preferences
 5. Restart your server
 
+📖 **For detailed installation instructions, see [docs/INSTALLATION.md](docs/INSTALLATION.md)**
+
 ---
 
 ## ⌨️ Default Controls
@@ -200,6 +202,16 @@ local framework = exports['lxr-radialmenu']:GetFramework()
 © 2026 iBoss | The Land of Wolves | www.wolves.land
 
 This resource is provided as-is for use on The Land of Wolves server.
+
+📄 **Full license details: [docs/LICENSE](docs/LICENSE)**
+
+---
+
+## 📚 Additional Documentation
+
+- 📖 **[Installation Guide](docs/INSTALLATION.md)** - Complete setup instructions
+- 🎨 **[UI Design Documentation](docs/UI_DESIGN.md)** - Western theme details
+- 👔 **[Murphy's Clothing Integration](docs/MURPHY_CLOTHING_INTEGRATION.md)** - Clothing system integration
 
 ---
 
