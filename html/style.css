@@ -9,18 +9,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:wght@400;600&family=Rye&display=swap');
 
 :root {
-    /* 1899 Western Color Palette */
-    --charcoal-bg: #1a1410;
-    --parchment-bg: #F5E6D3;
-    --leather-brown: #3E2723;
-    --leather-dark: #2C1810;
-    --brass-gold: #B8860B;
-    --brass-shine: #DAA520;
-    --copper: #8B4513;
-    --bone-white: #F5F5DC;
-    --blood-red: #8B0000;
-    --sepia-shadow: rgba(0, 0, 0, 0.5);
-    --warm-glow: rgba(218, 165, 32, 0.3);
+    /* Modern Luxury Western Palette */
+    --dark-primary: #0d0d0d;
+    --dark-secondary: #1a1a1a;
+    --gold-accent: #d4af37;
+    --gold-light: #f4d03f;
+    --gold-dark: #b8941f;
+    --white-primary: #ffffff;
+    --white-muted: rgba(255, 255, 255, 0.7);
+    --shadow-strong: rgba(0, 0, 0, 0.8);
+    --glow-gold: rgba(212, 175, 55, 0.3);
     
     /* Typography */
     --font-saloon: 'Rye', cursive;
@@ -54,7 +52,9 @@ body {
     justify-content: center;
     align-items: center;
     transition: opacity 0.3s ease;
-    background: radial-gradient(ellipse at center, rgba(26, 20, 16, 0.4) 0%, rgba(26, 20, 16, 0.8) 100%);
+    background: radial-gradient(ellipse at center, rgba(13, 13, 13, 0.4) 0%, rgba(13, 13, 13, 0.9) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 #radial-menu-container.hidden {

@@ -9,21 +9,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Rye&display=swap');
 
 :root {
-    /* 1899 Western Color Palette */
-    --charcoal-bg: #1a1410;
-    --parchment-bg: #F5E6D3;
-    --parchment-dark: #E8D4B8;
-    --leather-brown: #3E2723;
-    --leather-dark: #2C1810;
-    --brass-gold: #B8860B;
-    --brass-shine: #DAA520;
-    --copper: #8B4513;
-    --bone-white: #F5F5DC;
-    --blood-red: #8B0000;
-    --steel-teal: #4A6572;
-    --sepia-shadow: rgba(0, 0, 0, 0.35);
-    --aged-ink: #2C1810;
-    --warm-glow: #FAEBD7;
+    /* Modern Luxury Western Palette */
+    --dark-primary: #0d0d0d;
+    --dark-secondary: #1a1a1a;
+    --dark-tertiary: #252525;
+    --glass-dark: rgba(18, 18, 18, 0.85);
+    --glass-light: rgba(30, 30, 30, 0.75);
+    --gold-accent: #d4af37;
+    --gold-light: #f4d03f;
+    --gold-dark: #b8941f;
+    --silver-accent: #c0c0c0;
+    --white-primary: #ffffff;
+    --white-secondary: #f5f5f5;
+    --white-muted: rgba(255, 255, 255, 0.7);
+    --shadow-strong: rgba(0, 0, 0, 0.8);
+    --shadow-medium: rgba(0, 0, 0, 0.5);
+    --shadow-subtle: rgba(0, 0, 0, 0.2);
+    --glow-gold: rgba(212, 175, 55, 0.3);
     
     /* Typography */
     --font-saloon: 'Rye', cursive;
@@ -39,8 +41,8 @@
 
 body {
     font-family: var(--font-body);
-    background: radial-gradient(ellipse at center, #2C1810 0%, #1a1410 100%);
-    color: var(--bone-white);
+    background: radial-gradient(ellipse at center, var(--dark-secondary) 0%, var(--dark-primary) 100%);
+    color: var(--white-primary);
     overflow: hidden;
     position: relative;
 }
@@ -56,8 +58,8 @@ body {
     height: 100%;
     pointer-events: none;
     background-image: 
-        radial-gradient(circle at 20% 30%, rgba(218, 165, 32, 0.02) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(184, 134, 11, 0.02) 0%, transparent 50%);
+        radial-gradient(circle at 20% 30%, var(--glow-gold) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
     animation: dustFloat 30s ease-in-out infinite;
     z-index: 1000;
 }
@@ -98,19 +100,15 @@ body::before {
     width: 90vw;
     max-width: 1500px;
     height: 90vh;
-    background: 
-        linear-gradient(to bottom right, rgba(44, 24, 16, 0.95), rgba(26, 20, 16, 0.98)),
-        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23221810" width="100" height="100"/><circle cx="50" cy="50" r="1" fill="%23332010" opacity="0.3"/></svg>');
-    background-size: cover, 3px 3px;
-    border: 12px solid var(--leather-brown);
-    border-radius: 2px;
+    background: var(--glass-dark);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 12px;
     box-shadow: 
-        0 0 0 2px var(--brass-gold),
-        0 0 0 14px var(--leather-dark),
-        0 0 0 16px var(--brass-gold),
-        0 30px 80px rgba(0, 0, 0, 0.8),
-        inset 0 0 100px rgba(0, 0, 0, 0.4),
-        inset 0 2px 0 rgba(255, 255, 255, 0.05);
+        0 0 0 1px rgba(212, 175, 55, 0.3),
+        0 30px 80px var(--shadow-strong),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
     transition: opacity 0.4s ease, transform 0.4s ease;
     overflow: hidden;
     position: relative;
@@ -144,35 +142,34 @@ body::before {
     justify-content: space-between;
     align-items: center;
     padding: 20px 30px;
-    background: linear-gradient(to bottom, var(--leather-dark), var(--leather-brown));
-    border-bottom: 4px solid var(--brass-gold);
+    background: linear-gradient(to bottom, rgba(26, 26, 26, 0.9), rgba(18, 18, 18, 0.95));
+    border-bottom: 1px solid var(--gold-accent);
     box-shadow: 
-        0 2px 0 var(--brass-shine),
+        0 2px 0 rgba(212, 175, 55, 0.1),
         0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
 .title-badge {
     position: relative;
     padding: 10px 20px;
-    background: linear-gradient(135deg, var(--parchment-dark), var(--parchment-bg));
-    border: 3px solid var(--brass-gold);
-    border-radius: 3px;
+    background: rgba(26, 26, 26, 0.6);
+    border: 1px solid var(--gold-accent);
+    border-radius: 8px;
     box-shadow: 
-        0 0 0 2px var(--leather-dark),
-        0 4px 10px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        0 0 20px var(--glow-gold),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .main-title {
     font-family: var(--font-title);
     font-size: 28px;
     font-weight: 700;
-    color: var(--aged-ink);
+    color: var(--gold-accent);
     letter-spacing: 3px;
     text-transform: uppercase;
     text-shadow: 
-        1px 1px 0 rgba(255, 255, 255, 0.5),
-        2px 2px 4px rgba(0, 0, 0, 0.2);
+        0 0 20px var(--glow-gold),
+        2px 2px 4px var(--shadow-strong);
     margin-bottom: 2px;
 }
 
@@ -180,14 +177,14 @@ body::before {
     font-family: var(--font-body);
     font-size: 14px;
     font-style: italic;
-    color: var(--copper);
+    color: var(--white-muted);
     letter-spacing: 1px;
 }
 
 .branding {
     font-family: var(--font-body);
     font-size: 11px;
-    color: var(--brass-gold);
+    color: var(--gold-light);
     margin-top: 4px;
     letter-spacing: 0.5px;
 }
@@ -198,12 +195,12 @@ body::before {
     align-items: center;
     gap: 15px;
     padding: 10px 20px;
-    background: linear-gradient(135deg, var(--parchment-dark), var(--parchment-bg));
-    border: 3px solid var(--brass-gold);
+    background: rgba(26, 26, 26, 0.6);
+    border: 1px solid var(--gold-accent);
     border-radius: 50px;
     box-shadow: 
-        0 0 0 2px var(--leather-dark),
-        0 4px 10px rgba(0, 0, 0, 0.3);
+        0 0 15px rgba(212, 175, 55, 0.2),
+        0 4px 10px var(--shadow-medium);
 }
 
 .portrait-frame {
@@ -211,18 +208,18 @@ body::before {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    border: 4px solid var(--brass-gold);
+    border: 2px solid var(--gold-accent);
     box-shadow: 
-        0 0 0 2px var(--leather-brown),
-        inset 0 2px 5px rgba(0, 0, 0, 0.3);
+        0 0 10px var(--glow-gold),
+        inset 0 2px 5px var(--shadow-medium);
     overflow: hidden;
-    background: linear-gradient(135deg, var(--parchment-dark), var(--aged-ink));
+    background: linear-gradient(135deg, var(--dark-tertiary), var(--dark-secondary));
 }
 
 .portrait-image {
     width: 100%;
     height: 100%;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="55" text-anchor="middle" font-size="40" fill="%238B4513">BO</text></svg>');
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="55" text-anchor="middle" font-size="40" fill="%23d4af37">JM</text></svg>');
     background-size: cover;
     background-position: center;
 }
@@ -233,10 +230,10 @@ body::before {
     right: -2px;
     width: 20px;
     height: 20px;
-    background: radial-gradient(circle, var(--brass-shine), var(--brass-gold));
+    background: radial-gradient(circle, var(--gold-light), var(--gold-accent));
     border-radius: 50%;
-    border: 2px solid var(--leather-brown);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--dark-primary);
+    box-shadow: 0 2px 4px var(--shadow-medium);
 }
 
 .character-info {
@@ -247,14 +244,14 @@ body::before {
     font-family: var(--font-title);
     font-size: 18px;
     font-weight: 600;
-    color: var(--aged-ink);
+    color: var(--white-primary);
     letter-spacing: 1px;
 }
 
 .character-id {
     font-family: var(--font-body);
     font-size: 13px;
-    color: var(--copper);
+    color: var(--white-muted);
     font-style: italic;
     margin-top: 2px;
 }
@@ -273,10 +270,12 @@ body::before {
    ════════════════════════════════════════════════════════════════ */
 .sidebar-navigation {
     width: 200px;
-    background: linear-gradient(to bottom, var(--leather-brown), var(--leather-dark));
-    border-right: 4px solid var(--brass-gold);
+    background: rgba(18, 18, 18, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(212, 175, 55, 0.2);
     padding: 20px 10px;
-    box-shadow: inset -3px 0 10px rgba(0, 0, 0, 0.3);
+    box-shadow: inset -3px 0 10px var(--shadow-subtle);
 }
 
 .nav-tabs {
@@ -287,38 +286,40 @@ body::before {
 
 .nav-tab {
     position: relative;
-    background: linear-gradient(135deg, var(--parchment-dark), var(--parchment-bg));
-    border: 3px solid var(--brass-gold);
-    border-left: 6px solid var(--copper);
+    background: rgba(30, 30, 30, 0.4);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-left: 3px solid transparent;
     padding: 15px 15px 15px 25px;
     font-family: var(--font-body);
     font-size: 15px;
     font-weight: 600;
-    color: var(--aged-ink);
+    color: var(--white-secondary);
     text-align: left;
     cursor: pointer;
     transition: all 0.3s ease;
+    border-radius: 6px;
     box-shadow: 
-        0 2px 5px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        0 2px 5px var(--shadow-subtle),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .nav-tab:hover {
-    background: linear-gradient(135deg, var(--brass-gold), var(--brass-shine));
-    color: var(--aged-ink);
+    background: rgba(212, 175, 55, 0.1);
+    border-left-color: var(--gold-accent);
+    color: var(--white-primary);
     transform: translateX(5px);
     box-shadow: 
-        0 4px 10px rgba(184, 134, 11, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        0 0 15px var(--glow-gold),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .nav-tab.active {
-    background: linear-gradient(135deg, var(--brass-gold), var(--brass-shine));
-    border-left-color: var(--blood-red);
-    color: var(--aged-ink);
+    background: rgba(212, 175, 55, 0.15);
+    border-left-color: var(--gold-accent);
+    color: var(--gold-accent);
     box-shadow: 
-        0 4px 10px rgba(184, 134, 11, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        0 0 20px var(--glow-gold),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .tab-rivet {
@@ -326,12 +327,12 @@ body::before {
     left: 8px;
     top: 50%;
     transform: translateY(-50%);
-    width: 8px;
-    height: 8px;
-    background: radial-gradient(circle, var(--brass-shine), var(--brass-gold));
+    width: 6px;
+    height: 6px;
+    background: var(--gold-accent);
     border-radius: 50%;
-    border: 2px solid var(--leather-dark);
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--gold-dark);
+    box-shadow: 0 0 5px var(--glow-gold);
 }
 
 .tab-label {
@@ -345,10 +346,7 @@ body::before {
     flex: 1;
     padding: 30px;
     overflow-y: auto;
-    background: 
-        linear-gradient(to bottom, rgba(26, 20, 16, 0.3), rgba(44, 24, 16, 0.2)),
-        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="%231a1410" width="200" height="200"/><path d="M 0 0 L 200 200 M 200 0 L 0 200" stroke="%23332010" stroke-width="0.5" opacity="0.1"/></svg>');
-    background-size: cover, 100px 100px;
+    background: transparent;
 }
 
 .tab-content {
@@ -373,19 +371,19 @@ body::before {
     font-family: var(--font-title);
     font-size: 32px;
     font-weight: 700;
-    color: var(--brass-gold);
+    color: var(--gold-accent);
     text-transform: uppercase;
     letter-spacing: 2px;
     text-shadow: 
-        2px 2px 0 rgba(0, 0, 0, 0.5),
-        0 0 20px rgba(184, 134, 11, 0.3);
+        0 0 20px var(--glow-gold),
+        2px 2px 0 var(--shadow-strong);
     margin-bottom: 10px;
 }
 
 .ornamental-line {
-    height: 3px;
-    background: linear-gradient(to right, var(--brass-gold), var(--copper), var(--brass-gold));
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold-accent), transparent);
+    box-shadow: 0 0 10px var(--glow-gold);
     border-radius: 2px;
 }
 
@@ -403,21 +401,22 @@ body::before {
     justify-content: space-between;
     align-items: center;
     padding: 20px 25px;
-    background: linear-gradient(135deg, rgba(62, 39, 35, 0.5), rgba(44, 24, 16, 0.5));
-    border: 3px solid var(--brass-gold);
-    border-left: 6px solid var(--copper);
-    border-radius: 2px;
+    background: rgba(26, 26, 26, 0.4);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-left: 3px solid transparent;
+    border-radius: 8px;
     box-shadow: 
-        0 4px 10px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        0 4px 10px var(--shadow-subtle),
+        inset 0 1px 0 rgba(255, 255, 255, 0.02);
     transition: all 0.3s ease;
 }
 
 .setting-row:hover {
-    background: linear-gradient(135deg, rgba(62, 39, 35, 0.7), rgba(44, 24, 16, 0.7));
+    background: rgba(26, 26, 26, 0.6);
+    border-left-color: var(--gold-accent);
     box-shadow: 
-        0 6px 15px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 0 20px var(--glow-gold),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .setting-label {
@@ -430,15 +429,14 @@ body::before {
     font-family: var(--font-title);
     font-size: 18px;
     font-weight: 600;
-    color: var(--brass-gold);
+    color: var(--white-primary);
     letter-spacing: 1px;
 }
 
 .label-desc {
     font-family: var(--font-body);
     font-size: 14px;
-    color: var(--bone-white);
-    opacity: 0.8;
+    color: var(--white-muted);
     font-style: italic;
 }
 
@@ -455,34 +453,34 @@ body::before {
     font-family: var(--font-body);
     font-size: 16px;
     font-weight: 600;
-    color: var(--aged-ink);
-    background: linear-gradient(135deg, var(--parchment-bg), var(--parchment-dark));
-    border: 3px solid var(--brass-gold);
-    border-radius: 3px;
+    color: var(--white-primary);
+    background: rgba(26, 26, 26, 0.6);
+    border: 1px solid var(--gold-accent);
+    border-radius: 6px;
     outline: none;
     cursor: pointer;
     appearance: none;
-    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path fill="%238B4513" d="M5 7l5 5 5-5H5z"/></svg>');
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path fill="%23d4af37" d="M5 7l5 5 5-5H5z"/></svg>');
     background-repeat: no-repeat;
     background-position: right 15px center;
     box-shadow: 
-        0 2px 5px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        0 0 10px var(--glow-gold),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
     transition: all 0.3s ease;
 }
 
 .western-select:hover {
-    background: linear-gradient(135deg, var(--parchment-dark), var(--parchment-bg));
+    background: rgba(26, 26, 26, 0.8);
     box-shadow: 
-        0 4px 10px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        0 0 20px var(--glow-gold),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .western-select:focus {
-    border-color: var(--brass-shine);
+    border-color: var(--gold-light);
     box-shadow: 
-        0 0 0 3px rgba(184, 134, 11, 0.3),
-        0 4px 10px rgba(0, 0, 0, 0.3);
+        0 0 0 3px var(--glow-gold),
+        0 0 20px var(--glow-gold);
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -506,13 +504,13 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, var(--leather-dark), var(--leather-brown));
-    border: 3px solid var(--brass-gold);
+    background: rgba(18, 18, 18, 0.8);
+    border: 1px solid rgba(212, 175, 55, 0.3);
     border-radius: 50px;
     transition: all 0.3s ease;
     box-shadow: 
-        inset 0 2px 5px rgba(0, 0, 0, 0.5),
-        0 2px 4px rgba(0, 0, 0, 0.3);
+        inset 0 2px 5px var(--shadow-medium),
+        0 2px 4px var(--shadow-subtle);
 }
 
 .toggle-slider::before {
@@ -522,24 +520,29 @@ body::before {
     width: 26px;
     left: 3px;
     bottom: 3px;
-    background: linear-gradient(135deg, var(--brass-gold), var(--brass-shine));
+    background: linear-gradient(135deg, var(--gold-accent), var(--gold-light));
     border-radius: 50%;
     transition: all 0.3s ease;
     box-shadow: 
-        0 2px 5px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        0 2px 5px var(--shadow-medium),
+        0 0 10px var(--glow-gold),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .toggle-switch input:checked + .toggle-slider {
-    background: linear-gradient(135deg, var(--brass-gold), var(--brass-shine));
+    background: rgba(212, 175, 55, 0.3);
+    border-color: var(--gold-accent);
     box-shadow: 
-        inset 0 2px 5px rgba(0, 0, 0, 0.3),
-        0 0 10px rgba(184, 134, 11, 0.5);
+        inset 0 2px 5px var(--shadow-subtle),
+        0 0 15px var(--glow-gold);
 }
 
 .toggle-switch input:checked + .toggle-slider::before {
     transform: translateX(34px);
-    background: linear-gradient(135deg, var(--parchment-bg), var(--parchment-dark));
+    background: linear-gradient(135deg, var(--gold-light), var(--gold-accent));
+    box-shadow: 
+        0 2px 5px var(--shadow-medium),
+        0 0 15px var(--glow-gold);
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -555,16 +558,17 @@ body::before {
     align-items: center;
     gap: 10px;
     padding: 10px 20px;
-    background: linear-gradient(135deg, rgba(62, 39, 35, 0.3), rgba(44, 24, 16, 0.3));
-    border: 2px solid var(--brass-gold);
+    background: rgba(26, 26, 26, 0.4);
+    border: 1px solid rgba(212, 175, 55, 0.2);
     border-radius: 25px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .radio-option:hover {
-    background: linear-gradient(135deg, rgba(62, 39, 35, 0.5), rgba(44, 24, 16, 0.5));
-    box-shadow: 0 0 10px rgba(184, 134, 11, 0.3);
+    background: rgba(212, 175, 55, 0.1);
+    border-color: var(--gold-accent);
+    box-shadow: 0 0 15px var(--glow-gold);
 }
 
 .radio-option input {
@@ -574,11 +578,11 @@ body::before {
 .radio-custom {
     width: 20px;
     height: 20px;
-    border: 3px solid var(--brass-gold);
+    border: 2px solid var(--gold-accent);
     border-radius: 50%;
-    background: var(--leather-dark);
+    background: rgba(18, 18, 18, 0.8);
     position: relative;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 2px 4px var(--shadow-medium);
 }
 
 .radio-option input:checked + .radio-custom::after {
@@ -590,8 +594,8 @@ body::before {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: radial-gradient(circle, var(--brass-shine), var(--brass-gold));
-    box-shadow: 0 0 5px rgba(184, 134, 11, 0.8);
+    background: radial-gradient(circle, var(--gold-light), var(--gold-accent));
+    box-shadow: 0 0 10px var(--glow-gold);
 }
 
 .radio-label {
