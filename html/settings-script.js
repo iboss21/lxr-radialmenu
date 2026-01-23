@@ -6,17 +6,20 @@
  * ════════════════════════════════════════════════════════════════
  */
 
-// 1899 Period-Accurate Menu Labels
-const WESTERN_LABELS = {
-    'Ledger': '📜',
-    'Telegraph': '📨',
-    'Saddlebags': '🎒',
-    'Wardrobe': '🤠',
-    'Gestures': '🎭',
-    'Money Pouch': '💰',
-    'Trade': '⚒️',
-    'Horse/Wagon': '🐴'
+// 1899 Period-Accurate Menu Items (Western Era)
+const WESTERN_COMMANDS = {
+    'Ledger': '📜',           // Settings (Sheriff's ledger)
+    'Telegraph': '📨',        // Phone (Telegraph office)
+    'Saddlebags': '🎒',       // Inventory (Satchel)
+    'Wardrobe': '🤠',         // Clothes (Hat & coat)
+    'Gestures': '🎭',         // Emotes
+    'Money Pouch': '💰',      // Wallet
+    'Trade': '⚒️',            // Job
+    'Horse/Wagon': '🐴'       // Vehicles
 };
+
+const DEFAULT_COMMANDS = Object.keys(WESTERN_COMMANDS);
+const MAX_COMMANDS = 8;
 
 // Initialize settings
 let currentSettings = {
@@ -25,10 +28,15 @@ let currentSettings = {
     behaviour: 'press',
     soundEffect: true,
     coloredMenus: true,
-    commands: Object.keys(WESTERN_LABELS)
+    commands: [...DEFAULT_COMMANDS]
 };
 
-// Initialize on page load
+let draggedElement = null;
+let draggedIndex = null;
+
+// ════════════════════════════════════════════════════════════════
+// INITIALIZATION
+// ════════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
     initializeSettings();
     setupEventListeners();
@@ -36,25 +44,48 @@ document.addEventListener('DOMContentLoaded', function() {
     renderRadialPreview();
 });
 
+// NUI Message Listener
+window.addEventListener('message', function(event) {
+    const data = event.data;
+    
+    switch(data.action) {
+        case 'openSettings':
+            openSettings(data.settings);
+            break;
+        case 'closeSettings':
+            closeSettings();
+            break;
+    }
+});
+
 // Initialize settings from localStorage or defaults
 function initializeSettings() {
     const savedSettings = localStorage.getItem('tlw_radial_settings');
     if (savedSettings) {
-        currentSettings = JSON.parse(savedSettings);
-        applySettings();
+        try {
+            currentSettings = JSON.parse(savedSettings);
+            // Ensure commands array exists and is valid
+            if (!currentSettings.commands || !Array.isArray(currentSettings.commands)) {
+                currentSettings.commands = [...DEFAULT_COMMANDS];
+            }
+        } catch(e) {
+            console.error('Failed to load settings:', e);
+            currentSettings.commands = [...DEFAULT_COMMANDS];
+        }
     }
+    applySettings();
 }
 
 // Apply settings to UI
 function applySettings() {
-    document.getElementById('theme-select').value = currentSettings.theme;
-    document.getElementById('bg-blur').checked = currentSettings.backgroundBlur;
-    document.getElementById('sound-effect').checked = currentSettings.soundEffect;
-    document.getElementById('colored-menus').checked = currentSettings.coloredMenus;
+    document.getElementById('theme-select').value = currentSettings.theme || 'wolves';
+    document.getElementById('bg-blur').checked = currentSettings.backgroundBlur !== false;
+    document.getElementById('sound-effect').checked = currentSettings.soundEffect !== false;
+    document.getElementById('colored-menus').checked = currentSettings.coloredMenus !== false;
     
     const behaviourRadios = document.querySelectorAll('input[name="behaviour"]');
     behaviourRadios.forEach(radio => {
-        radio.checked = radio.value === currentSettings.behaviour;
+        radio.checked = radio.value === (currentSettings.behaviour || 'press');
     });
 }
 
@@ -67,12 +98,16 @@ function saveSettings() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(currentSettings)
+    }).catch(() => {
+        console.log('Failed to save settings to client (expected in browser)');
     });
     
     playSound('save');
 }
 
-// Setup event listeners
+// ════════════════════════════════════════════════════════════════
+// EVENT LISTENERS
+// ════════════════════════════════════════════════════════════════
 function setupEventListeners() {
     // Tab navigation
     const navTabs = document.querySelectorAll('.nav-tab');
@@ -145,22 +180,32 @@ function setupEventListeners() {
     }
 }
 
-// Switch tab
+// ════════════════════════════════════════════════════════════════
+// TAB SWITCHING
+// ════════════════════════════════════════════════════════════════
 function switchTab(tabName) {
     // Update nav tabs
     document.querySelectorAll('.nav-tab').forEach(tab => {
         tab.classList.remove('active');
     });
-    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+    const activeTab = document.querySelector(`[data-tab="${tabName}"]`);
+    if (activeTab) {
+        activeTab.classList.add('active');
+    }
     
     // Update content
     document.querySelectorAll('.tab-content').forEach(content => {
         content.classList.remove('active');
     });
-    document.querySelector(`[data-content="${tabName}"]`).classList.add('active');
+    const activeContent = document.querySelector(`[data-content="${tabName}"]`);
+    if (activeContent) {
+        activeContent.classList.add('active');
+    }
 }
 
-// Render commands list for customize tab
+// ════════════════════════════════════════════════════════════════
+// COMMANDS LIST - DRAG & DROP
+// ════════════════════════════════════════════════════════════════
 function renderCommandsList() {
     const commandsList = document.getElementById('commands-list');
     if (!commandsList) return;
@@ -172,36 +217,52 @@ function renderCommandsList() {
         commandItem.className = 'command-item';
         commandItem.draggable = true;
         commandItem.dataset.index = index;
+        commandItem.dataset.command = command;
+        
+        const icon = WESTERN_COMMANDS[command] || '❓';
         
         commandItem.innerHTML = `
-            <span class="drag-handle">⋮⋮</span>
-            <span class="command-label">${command}</span>
-            <span class="delete-icon" data-command="${command}">✕</span>
+            <div class="command-content">
+                <span class="command-icon">${icon}</span>
+                <span class="command-label">${command}</span>
+            </div>
+            <div class="command-actions">
+                <button class="action-btn drag-handle" title="Drag to reorder">⋮⋮</button>
+                <button class="action-btn delete" title="Delete" data-command="${command}">🗑️</button>
+            </div>
         `;
         
-        // Drag and drop
+        // Drag and drop events
         commandItem.addEventListener('dragstart', handleDragStart);
         commandItem.addEventListener('dragover', handleDragOver);
         commandItem.addEventListener('drop', handleDrop);
         commandItem.addEventListener('dragend', handleDragEnd);
+        commandItem.addEventListener('dragenter', handleDragEnter);
+        commandItem.addEventListener('dragleave', handleDragLeave);
         
         // Delete button
-        const deleteBtn = commandItem.querySelector('.delete-icon');
-        deleteBtn.addEventListener('click', function() {
-            deleteCommand(command);
+        const deleteBtn = commandItem.querySelector('.delete');
+        deleteBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            deleteCommand(command, index);
         });
         
         commandsList.appendChild(commandItem);
     });
+    
+    renderRadialPreview();
 }
 
-// Drag and drop handlers
-let draggedElement = null;
-
+// ════════════════════════════════════════════════════════════════
+// DRAG AND DROP HANDLERS
+// ════════════════════════════════════════════════════════════════
 function handleDragStart(e) {
     draggedElement = this;
-    this.style.opacity = '0.5';
+    draggedIndex = parseInt(this.dataset.index);
+    this.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.innerHTML);
+    playSound('drag');
 }
 
 function handleDragOver(e) {
@@ -212,142 +273,276 @@ function handleDragOver(e) {
     return false;
 }
 
+function handleDragEnter(e) {
+    if (this !== draggedElement) {
+        this.classList.add('drag-over');
+    }
+}
+
+function handleDragLeave(e) {
+    this.classList.remove('drag-over');
+}
+
 function handleDrop(e) {
     if (e.stopPropagation) {
         e.stopPropagation();
     }
     
     if (draggedElement !== this) {
-        const draggedIndex = parseInt(draggedElement.dataset.index);
-        const targetIndex = parseInt(this.dataset.index);
+        const dropIndex = parseInt(this.dataset.index);
         
-        // Swap commands
-        const temp = currentSettings.commands[draggedIndex];
-        currentSettings.commands[draggedIndex] = currentSettings.commands[targetIndex];
-        currentSettings.commands[targetIndex] = temp;
+        // Reorder commands array
+        const draggedCommand = currentSettings.commands[draggedIndex];
+        currentSettings.commands.splice(draggedIndex, 1);
+        currentSettings.commands.splice(dropIndex, 0, draggedCommand);
         
         saveSettings();
         renderCommandsList();
-        renderRadialPreview();
-        playSound('swap');
+        playSound('drop');
     }
     
+    this.classList.remove('drag-over');
     return false;
 }
 
 function handleDragEnd(e) {
-    this.style.opacity = '1';
+    this.classList.remove('dragging');
+    document.querySelectorAll('.command-item').forEach(item => {
+        item.classList.remove('drag-over');
+    });
 }
 
-// Delete command
-function deleteCommand(command) {
-    const index = currentSettings.commands.indexOf(command);
-    if (index > -1) {
+// ════════════════════════════════════════════════════════════════
+// COMMAND MANAGEMENT
+// ════════════════════════════════════════════════════════════════
+function deleteCommand(command, index) {
+    if (currentSettings.commands.length <= 1) {
+        showNotification('Cannot delete - At least one command is required!', 'error');
+        playSound('error');
+        return;
+    }
+    
+    if (confirm(`Remove "${command}" from the radial menu?`)) {
         currentSettings.commands.splice(index, 1);
         saveSettings();
         renderCommandsList();
-        renderRadialPreview();
+        showNotification(`"${command}" removed successfully`, 'success');
         playSound('delete');
     }
 }
 
-// Revert to defaults
-function revertToDefaults() {
-    currentSettings.commands = Object.keys(WESTERN_LABELS);
+function addCommand() {
+    if (currentSettings.commands.length >= MAX_COMMANDS) {
+        showNotification(`Maximum ${MAX_COMMANDS} commands reached!`, 'error');
+        playSound('error');
+        return;
+    }
+    
+    // Find commands not in use
+    const availableCommands = DEFAULT_COMMANDS.filter(
+        cmd => !currentSettings.commands.includes(cmd)
+    );
+    
+    if (availableCommands.length === 0) {
+        showNotification('All commands are already added!', 'warning');
+        playSound('error');
+        return;
+    }
+    
+    // Add first available command
+    const newCommand = availableCommands[0];
+    currentSettings.commands.push(newCommand);
     saveSettings();
     renderCommandsList();
-    renderRadialPreview();
+    showNotification(`"${newCommand}" added successfully`, 'success');
+    playSound('add');
 }
 
-// Render radial preview
+function revertToDefaults() {
+    if (confirm('Reset all commands to default configuration?')) {
+        currentSettings.commands = [...DEFAULT_COMMANDS];
+        saveSettings();
+        renderCommandsList();
+        showNotification('Commands reset to defaults', 'success');
+        playSound('reset');
+    }
+}
+
+// ════════════════════════════════════════════════════════════════
+// RADIAL PREVIEW
+// ════════════════════════════════════════════════════════════════
 function renderRadialPreview() {
     const previewItems = document.getElementById('preview-items');
     if (!previewItems) return;
     
     previewItems.innerHTML = '';
     
-    const numItems = Math.min(currentSettings.commands.length, 8);
-    const radius = 110; // Distance from center
-    const angleStep = (2 * Math.PI) / numItems;
+    const itemCount = currentSettings.commands.length;
+    const radius = 120; // Distance from center
+    const angleStep = (2 * Math.PI) / itemCount;
     
-    for (let i = 0; i < numItems; i++) {
-        const command = currentSettings.commands[i];
-        const angle = angleStep * i - Math.PI / 2; // Start at top
+    currentSettings.commands.forEach((command, index) => {
+        const angle = angleStep * index - (Math.PI / 2); // Start from top
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
         
-        const x = 140 + Math.cos(angle) * radius; // 140 is center
-        const y = 140 + Math.sin(angle) * radius;
+        const previewItem = document.createElement('div');
+        previewItem.className = 'preview-item';
+        previewItem.style.transform = `translate(${x}px, ${y}px)`;
         
-        const item = document.createElement('div');
-        item.className = 'preview-item';
-        item.style.left = x + 'px';
-        item.style.top = y + 'px';
-        item.style.animationDelay = `${i * 0.08}s`;
-        item.textContent = WESTERN_LABELS[command] || '⚡';
+        const icon = WESTERN_COMMANDS[command] || '❓';
         
-        previewItems.appendChild(item);
+        previewItem.innerHTML = `
+            <span class="preview-item-icon">${icon}</span>
+            <span class="preview-item-label">${command}</span>
+        `;
+        
+        previewItems.appendChild(previewItem);
+    });
+}
+
+// ════════════════════════════════════════════════════════════════
+// NOTIFICATIONS
+// ════════════════════════════════════════════════════════════════
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        background: ${type === 'error' ? '#8B0000' : type === 'success' ? '#2C7A2C' : '#B8860B'};
+        color: #F5F5DC;
+        border: 3px solid ${type === 'error' ? '#a00000' : type === 'success' ? '#3a9a3a' : '#DAA520'};
+        border-radius: 3px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        font-family: 'Crimson Text', serif;
+        font-size: 16px;
+        font-weight: 600;
+        z-index: 10000;
+        animation: slideInNotification 0.3s ease;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideOutNotification 0.3s ease';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+// Add notification animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideInNotification {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOutNotification {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
+
+// ════════════════════════════════════════════════════════════════
+// SOUND EFFECTS
+// ════════════════════════════════════════════════════════════════
+const sounds = {
+    click: 'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3',
+    toggle: 'https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3',
+    select: 'https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3',
+    save: 'https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3',
+    delete: 'https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3',
+    add: 'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3',
+    drag: 'https://assets.mixkit.co/active_storage/sfx/2570/2570-preview.mp3',
+    drop: 'https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3',
+    error: 'https://assets.mixkit.co/active_storage/sfx/2577/2577-preview.mp3',
+    reset: 'https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3'
+};
+
+function playSound(soundName) {
+    if (!currentSettings.soundEffect) return;
+    
+    try {
+        const audio = new Audio(sounds[soundName]);
+        audio.volume = 0.3;
+        audio.play().catch(() => {
+            // Silently fail if sound doesn't play
+        });
+    } catch(e) {
+        // Silently fail
     }
 }
 
-// Close settings
+// ════════════════════════════════════════════════════════════════
+// OPEN/CLOSE SETTINGS
+// ════════════════════════════════════════════════════════════════
+function openSettings(settings) {
+    if (settings) {
+        currentSettings = { ...currentSettings, ...settings };
+        applySettings();
+        renderCommandsList();
+        renderRadialPreview();
+    }
+    
+    const container = document.getElementById('settings-container');
+    container.classList.remove('hidden');
+    playSound('open');
+}
+
 function closeSettings() {
     const container = document.getElementById('settings-container');
     container.classList.add('hidden');
     
+    // Send close event to client
     fetch(`https://${GetParentResourceName()}/closeSettings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({})
+    }).catch(() => {
+        console.log('Failed to send close event (expected in browser)');
     });
-}
-
-// Play sound effect
-function playSound(type) {
-    if (!currentSettings.soundEffect) return;
     
-    // Simple audio feedback (can be replaced with actual audio files)
-    const audio = new Audio();
-    switch(type) {
-        case 'click':
-            // Click sound
-            break;
-        case 'toggle':
-            // Toggle sound
-            break;
-        case 'select':
-            // Select sound
-            break;
-        case 'save':
-            // Save sound
-            break;
-        case 'swap':
-            // Swap sound
-            break;
-        case 'delete':
-            // Delete sound
-            break;
-    }
+    playSound('close');
 }
 
-// Get parent resource name
+// ════════════════════════════════════════════════════════════════
+// HELPER FUNCTIONS
+// ════════════════════════════════════════════════════════════════
 function GetParentResourceName() {
-    let url = window.location.href;
-    let match = url.match(/https?:\/\/\w+\/(\w+)\//);
-    return match ? match[1] : 'lxr-radialmenu';
+    if (window.GetParentResourceName) {
+        return window.GetParentResourceName();
+    }
+    // For browser testing
+    return 'lxr-radialmenu';
 }
 
-// Listen for messages from game
-window.addEventListener('message', function(event) {
-    const data = event.data;
-    
-    if (data.action === 'openSettings') {
-        document.getElementById('settings-container').classList.remove('hidden');
-        if (data.settings) {
-            currentSettings = data.settings;
-            applySettings();
-            renderCommandsList();
-            renderRadialPreview();
-        }
-    } else if (data.action === 'closeSettings') {
-        closeSettings();
-    }
-});
+// Export functions for external access
+window.WolvesSettings = {
+    open: openSettings,
+    close: closeSettings,
+    saveSettings: saveSettings,
+    addCommand: addCommand,
+    deleteCommand: deleteCommand,
+    revertToDefaults: revertToDefaults
+};
