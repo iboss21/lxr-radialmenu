@@ -408,31 +408,127 @@ RegisterNetEvent('lxr-radialmenu:client:camp:pack', function()
 end)
 
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
--- CLOTHING MANAGEMENT
+-- MURPHY'S CLOTHING INTEGRATION (1899 Wardrobe System)
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-RegisterNetEvent('lxr-radialmenu:client:clothing:hat', function()
-    local ped = PlayerPedId()
-    -- Toggle hat
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Toggling hat')
+
+-- Check if Murphy's Clothing is available
+local function IsMurphyClothingAvailable()
+    if not Config.Clothing or not Config.Clothing.Enabled then
+        return false
     end
-    -- Implement clothing toggle logic
+    
+    local resourceState = GetResourceState(Config.Clothing.ResourceName)
+    return resourceState == 'started' or resourceState == 'starting'
+end
+
+-- Open full Murphy's Clothing menu
+RegisterNetEvent('lxr-radialmenu:client:clothing:open', function()
+    if not IsMurphyClothingAvailable() then
+        if Config.Debug then
+            print('^3[' .. Config.Branding.name .. ']^7 Murphy\'s Clothing not available')
+        end
+        return
+    end
+    
+    if Config.Clothing.UseCommand then
+        -- Use command to open (default method)
+        ExecuteCommand(Config.Clothing.Command)
+    else
+        -- Use event to open (alternative method)
+        TriggerEvent(Config.Clothing.EventName)
+    end
+    
+    if Config.Debug then
+        print('^2[' .. Config.Branding.name .. ']^7 Opening Murphy\'s Clothing wardrobe')
+    end
+end)
+
+-- Quick access to specific clothing categories
+RegisterNetEvent('lxr-radialmenu:client:clothing:hat', function()
+    if IsMurphyClothingAvailable() then
+        -- Open full wardrobe - Murphy's Clothing handles category selection
+        ExecuteCommand(Config.Clothing.Command)
+        if Config.Debug then
+            print('^2[' .. Config.Branding.name .. ']^7 Opening hat category')
+        end
+    end
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:clothing:coat', function()
-    local ped = PlayerPedId()
-    -- Toggle coat
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Toggling coat')
+    if IsMurphyClothingAvailable() then
+        ExecuteCommand(Config.Clothing.Command)
+        if Config.Debug then
+            print('^2[' .. Config.Branding.name .. ']^7 Opening coat category')
+        end
+    end
+end)
+
+RegisterNetEvent('lxr-radialmenu:client:clothing:vest', function()
+    if IsMurphyClothingAvailable() then
+        ExecuteCommand(Config.Clothing.Command)
+        if Config.Debug then
+            print('^2[' .. Config.Branding.name .. ']^7 Opening vest category')
+        end
     end
 end)
 
 RegisterNetEvent('lxr-radialmenu:client:clothing:bandana', function()
-    local ped = PlayerPedId()
-    -- Toggle bandana
-    if Config.Debug then
-        print('^2[' .. Config.Branding.name .. ']^7 Toggling bandana')
+    if IsMurphyClothingAvailable() then
+        ExecuteCommand(Config.Clothing.Command)
+        if Config.Debug then
+            print('^2[' .. Config.Branding.name .. ']^7 Opening bandana/mask category')
+        end
     end
+end)
+
+RegisterNetEvent('lxr-radialmenu:client:clothing:gloves', function()
+    if IsMurphyClothingAvailable() then
+        ExecuteCommand(Config.Clothing.Command)
+        if Config.Debug then
+            print('^2[' .. Config.Branding.name .. ']^7 Opening gloves category')
+        end
+    end
+end)
+
+RegisterNetEvent('lxr-radialmenu:client:clothing:boots', function()
+    if IsMurphyClothingAvailable() then
+        ExecuteCommand(Config.Clothing.Command)
+        if Config.Debug then
+            print('^2[' .. Config.Branding.name .. ']^7 Opening boots category')
+        end
+    end
+end)
+
+-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+-- LEGACY CLOTHING MANAGEMENT (Fallback if Murphy's not available)
+-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+-- Legacy clothing toggle functions (if Murphy's Clothing is not available)
+local function ToggleClothingComponent(component)
+    if IsMurphyClothingAvailable() then
+        -- If Murphy's is available, open the full wardrobe instead
+        ExecuteCommand(Config.Clothing.Command)
+        return
+    end
+    
+    -- Legacy fallback code for basic clothing toggle
+    local ped = PlayerPedId()
+    if Config.Debug then
+        print('^3[' .. Config.Branding.name .. ']^7 Legacy clothing toggle: ' .. component)
+    end
+    -- Add basic clothing toggle logic here if needed
+end
+
+RegisterNetEvent('lxr-radialmenu:client:clothing:hat', function()
+    ToggleClothingComponent('hat')
+end)
+
+RegisterNetEvent('lxr-radialmenu:client:clothing:coat', function()
+    ToggleClothingComponent('coat')
+end)
+
+RegisterNetEvent('lxr-radialmenu:client:clothing:bandana', function()
+    ToggleClothingComponent('bandana')
 end)
 
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

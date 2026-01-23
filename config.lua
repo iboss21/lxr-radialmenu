@@ -96,11 +96,38 @@ Config.Locales = {
         horse = 'Horse',
         wagon = 'Wagon',
         camp = 'Camp',
-        clothing = 'Clothing',
+        clothing = 'Wardrobe',
         interactions = 'Interactions',
         job = 'Job Actions',
         inventory = 'Satchel',
         weapons = 'Weapons'
+    }
+}
+
+-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+-- MURPHY'S CLOTHING INTEGRATION
+-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Config.Clothing = {
+    Enabled = true,                  -- Enable Murphy's Clothing integration
+    ResourceName = 'murphy_clothing', -- Murphy's Clothing resource name
+    UseCommand = true,               -- Use command to open clothing (if false, uses event)
+    Command = 'ClothesManagement',   -- Command from Murphy's config (Config.ClothesManagement.Command)
+    
+    -- Alternative: Use native event trigger if command doesn't work
+    -- Set UseCommand to false and configure the event below
+    EventName = 'murphy_clothing:client:openMenu',  -- Custom event if needed
+    
+    -- Quick clothing categories accessible from radial submenu
+    QuickAccess = {
+        enabled = true,
+        categories = {
+            { id = 'hat', label = 'Hat', category = 'hats' },
+            { id = 'coat', label = 'Coat', category = 'coats' },
+            { id = 'vest', label = 'Vest', category = 'vests' },
+            { id = 'bandana', label = 'Bandana', category = 'masks' },
+            { id = 'gloves', label = 'Gloves', category = 'gloves' },
+            { id = 'boots', label = 'Boots', category = 'boots' }
+        }
     }
 }
 
@@ -148,9 +175,10 @@ Config.MenuItems = {
     },
     {
         id = 'clothing',
-        label = 'Clothing',
+        label = 'Wardrobe',
         icon = '🤠',
         items = {
+            { id = 'full_wardrobe', label = 'Open Wardrobe', action = 'clothing:open' },
             { id = 'hat', label = 'Hat', action = 'clothing:hat' },
             { id = 'coat', label = 'Coat', action = 'clothing:coat' },
             { id = 'vest', label = 'Vest', action = 'clothing:vest' },
