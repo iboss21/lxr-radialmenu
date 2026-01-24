@@ -186,7 +186,7 @@ end
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 -- KEY BINDINGS
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-if Config.Menu.useKeyMapping then
+if Config.Menu.useKeyMapping and RegisterKeyMapping then
     RegisterKeyMapping(Config.Commands.openMenu, 'Open Radial Menu', 'keyboard', Config.Menu.openKey)
 end
 
