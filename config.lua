@@ -302,7 +302,7 @@ Config.Theme = {
         -- Image background
         image = {
             url = 'html/assets/backgrounds/wolves_bg.jpg',
-            ["repeat"] = 'no-repeat',
+            repeatStyle = 'no-repeat',
             size = 'cover',  -- 'cover', 'contain', 'auto'
             position = 'center',
             opacity = 0.3,
