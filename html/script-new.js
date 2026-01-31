@@ -493,7 +493,12 @@ document.getElementById('center-hub')?.addEventListener('click', () => {
 // ═══════════════════════════════════════════════════════════════
 
 function GetParentResourceName() {
-    return window.location.hostname === '' ? 'lxr-radialmenu' : window.location.hostname;
+    // Check if we're in NUI context
+    if (window.location.hostname === '' || 
+        window.location.hostname.startsWith('nui://')) {
+        return 'lxr-radialmenu';
+    }
+    return window.location.hostname;
 }
 
 // ═══════════════════════════════════════════════════════════════

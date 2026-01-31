@@ -189,16 +189,16 @@ end
 ---@param delay number Delay in milliseconds
 ---@return function Debounced function
 function Utils.Debounce(func, delay)
-    local timer = nil
+    local timerId = nil
     return function(...)
         local args = {...}
-        if timer then
-            timer = nil
+        if timerId then
+            ClearTimeout(timerId)
+            timerId = nil
         end
-        timer = true
-        SetTimeout(delay, function()
+        timerId = SetTimeout(delay, function()
             func(table.unpack(args))
-            timer = nil
+            timerId = nil
         end)
     end
 end

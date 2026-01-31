@@ -51,7 +51,7 @@ end
 RegisterNetEvent(Constants.EVENTS.SERVER.SYNC_SETTINGS)
 AddEventHandler(Constants.EVENTS.SERVER.SYNC_SETTINGS, function(settings)
     local source = source
-    local identifier = GetPlayerIdentifier(source)
+    local identifier = GetPlayerLicenseIdentifier(source)
     
     if settings then
         -- Save settings
@@ -74,7 +74,7 @@ end)
 RegisterNetEvent(Constants.EVENTS.SERVER.LOG_ACTION)
 AddEventHandler(Constants.EVENTS.SERVER.LOG_ACTION, function(action, itemId)
     local source = source
-    local identifier = GetPlayerIdentifier(source)
+    local identifier = GetPlayerLicenseIdentifier(source)
     local playerName = GetPlayerName(source)
     
     if Config.Debug then
@@ -92,7 +92,7 @@ end)
 --- Handle player connecting
 AddEventHandler('playerConnecting', function()
     local source = source
-    local identifier = GetPlayerIdentifier(source)
+    local identifier = GetPlayerLicenseIdentifier(source)
     
     -- Load player settings
     PlayerSettings[identifier] = LoadPlayerSettings(identifier)
@@ -101,7 +101,7 @@ end)
 --- Handle player dropped
 AddEventHandler('playerDropped', function()
     local source = source
-    local identifier = GetPlayerIdentifier(source)
+    local identifier = GetPlayerLicenseIdentifier(source)
     
     -- Clean up player data
     if PlayerSettings[identifier] then
@@ -113,10 +113,10 @@ end)
 -- UTILITY FUNCTIONS
 -- ═══════════════════════════════════════════════════════════════
 
---- Get player identifier
+--- Get player license identifier
 ---@param source number Player source
 ---@return string Identifier
-function GetPlayerIdentifier(source)
+local function GetPlayerLicenseIdentifier(source)
     local identifiers = GetPlayerIdentifiers(source)
     
     for _, id in ipairs(identifiers) do
@@ -169,7 +169,7 @@ end, true)
 ---@param source number Player source
 ---@return table Settings
 exports('GetPlayerSettings', function(source)
-    local identifier = GetPlayerIdentifier(source)
+    local identifier = GetPlayerLicenseIdentifier(source)
     return PlayerSettings[identifier] or {}
 end)
 

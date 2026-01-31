@@ -342,13 +342,43 @@ end
 -- KEY BINDINGS
 -- ═══════════════════════════════════════════════════════════════
 
+-- Key mapping table
+local KeyMap = {
+    ['F1'] = 288,
+    ['F2'] = 289,
+    ['F3'] = 170,
+    ['F4'] = 166,
+    ['F5'] = 167,
+    ['F6'] = 168,
+    ['F7'] = 169,
+    ['F8'] = 56,
+    ['F9'] = 57,
+    ['F10'] = 243,
+}
+
+--- Get key code from config
+---@return number Key code
+local function GetOpenKeyCode()
+    local key = Config.Menu.openKey
+    
+    -- If it's already a number, return it
+    if type(key) == 'number' then
+        return key
+    end
+    
+    -- Look up in key map
+    return KeyMap[key] or 288  -- Default to F1
+end
+
 --- Key mapping handler
 CreateThread(function()
+    local openKeyCode = GetOpenKeyCode()
+    
     while true do
         Wait(0)
         
         -- Check if menu key is pressed
-        if IsControlJustPressed(0, Config.Menu.openKey == 'F1' and 288 or 289) then
+        if IsControlJustPressed(0, openKeyCode) then
             if MenuState.isOpen then
                 CloseMenu()
             else

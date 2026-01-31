@@ -208,9 +208,9 @@ Config.MenuItems = {
     
     {
         id = 'settings',
-        label = 'Ledger',
+        label = 'Settings',
         icon = '⚙️',
-        description = 'Menu settings',
+        description = 'Menu preferences',
         enabled = true,
         action = 'openSettings',
     }
