@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LXR Radial Menu v2.0</title>
+    <link rel="stylesheet" href="style-new.css">
+</head>
+<body>
+    <!-- Main Radial Menu Container -->
+    <div id="radial-menu" class="hidden">
+        <!-- Background Overlay -->
+        <div id="menu-overlay"></div>
+        
+        <!-- Menu Content -->
+        <div id="menu-content">
+            <!-- Center Hub -->
+            <div id="center-hub">
+                <div id="center-icon">🐺</div>
+                <div id="center-label">Menu</div>
+            </div>
+            
+            <!-- Radial Items Container -->
+            <div id="radial-items"></div>
+            
+            <!-- Submenu Items Container -->
+            <div id="submenu-items" class="hidden"></div>
+        </div>
+        
+        <!-- Info Panel -->
+        <div id="info-panel" class="hidden">
+            <div id="info-title"></div>
+            <div id="info-description"></div>
+            <div id="info-hotkey"></div>
+        </div>
+        
+        <!-- Breadcrumb Navigation -->
+        <div id="breadcrumb">
+            <span class="breadcrumb-item active">Main Menu</span>
+        </div>
+    </div>
+    
+    <!-- Settings Panel -->
+    <div id="settings-panel" class="hidden">
+        <div class="settings-header">
+            <h2>⚙️ Menu Settings</h2>
+            <button id="close-settings" class="btn-close">✖</button>
+        </div>
+        
+        <div class="settings-content">
+            <!-- Theme Selection -->
+            <div class="setting-group">
+                <label>Theme</label>
+                <select id="theme-select">
+                    <option value="wolves">Wolves (Dark)</option>
+                    <option value="saloon">Saloon (Warm)</option>
+                    <option value="frontier">Frontier (Green)</option>
+                    <option value="midnight">Midnight (Blue)</option>
+                    <option value="bloodmoon">Blood Moon (Red)</option>
+                </select>
+            </div>
+            
+            <!-- Animation Speed -->
+            <div class="setting-group">
+                <label>Animation Speed</label>
+                <select id="animation-select">
+                    <option value="instant">Instant</option>
+                    <option value="fast">Fast</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="slow">Slow</option>
+                </select>
+            </div>
+            
+            <!-- Sound Effects -->
+            <div class="setting-group">
+                <label>
+                    <input type="checkbox" id="sound-toggle" checked>
+                    Sound Effects
+                </label>
+            </div>
+            
+            <!-- Background Blur -->
+            <div class="setting-group">
+                <label>
+                    <input type="checkbox" id="blur-toggle" checked>
+                    Background Blur
+                </label>
+            </div>
+            
+            <!-- Tooltips -->
+            <div class="setting-group">
+                <label>
+                    <input type="checkbox" id="tooltip-toggle" checked>
+                    Show Tooltips
+                </label>
+            </div>
+            
+            <!-- Save Button -->
+            <button id="save-settings" class="btn-primary">Save Settings</button>
+        </div>
+    </div>
+    
+    <script src="script-new.js"></script>
+</body>
+</html>
